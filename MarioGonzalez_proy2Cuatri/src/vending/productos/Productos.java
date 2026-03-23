@@ -1,14 +1,15 @@
-package jerarquiaProductos;
+package vending.productos;
 
 import java.math.*;
+import java.util.Objects;
 
-public abstract class Producto {
+public abstract class Productos {
 
 	private String id;
 	private String nombre;
 	private BigDecimal precio;
 	
-	public Producto(String id, String nombre) {
+	public Productos(String id, String nombre) {
 		setId(id);
 		setNombre(nombre);
 	}
@@ -38,5 +39,11 @@ public abstract class Producto {
 	}
 
 	public abstract BigDecimal calcularPrecio(BigDecimal precio);
+
+	@Override
+	public boolean equals(Object obj) {
+		Productos otroPro = (Productos) obj;
+		return this.id.equals(otroPro.id);
+	}
 	
 }

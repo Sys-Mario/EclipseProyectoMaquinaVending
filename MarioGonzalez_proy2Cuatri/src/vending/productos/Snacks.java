@@ -1,8 +1,8 @@
-package jerarquiaProductos;
+package vending.productos;
 
 import java.math.*;
 
-public class Snacks extends Producto {
+public class Snacks extends Productos {
 
 	private TamañoSnacks tamaño;
 	
@@ -24,7 +24,8 @@ public class Snacks extends Producto {
 	public BigDecimal calcularPrecio(BigDecimal precio) {
 		if (this.getTamaño() == TamañoSnacks.L) {
 			precio.multiply(new BigDecimal("0.2"));
-		} else if (this.getTamaño() == TamañoSnacks.S) {
+		}
+		if (this.getTamaño() == TamañoSnacks.S) {
 			precio.divide(new BigDecimal("0.1"));
 		}
 		return precio;

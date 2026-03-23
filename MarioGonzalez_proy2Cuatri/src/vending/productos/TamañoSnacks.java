@@ -1,4 +1,4 @@
-package jerarquiaProductos;
+package vending.productos;
 
 public enum TamañoSnacks {
 
