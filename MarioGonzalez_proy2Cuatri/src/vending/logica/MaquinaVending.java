@@ -16,6 +16,7 @@ public class MaquinaVending {
 	public MaquinaVending() {
 		this.stock = new HashMap<>();
 		this.inicializarEstructura();
+		this.depositoMonedas = new Deposito (20);
 		this.creditoCliente = new BigDecimal("0");
 	}
 	
@@ -45,7 +46,7 @@ public class MaquinaVending {
 
 	public void inicializarEstructura () {
 		for (char i = 'A'; i <= 'D'; i++) {
-			for (int j = 1; i <= 4; j++) {
+			for (int j = 1; j <= 4; j++) {
 				String codigo = String.valueOf(i) + j;
 				stock.put(codigo, new Ranuras(null, 0));
 			}
@@ -64,8 +65,6 @@ public class MaquinaVending {
 		} else {
 			System.out.println("Esa ranura no tiene stock!");
 		}
-		
-		
 	}
 	
 	public void introducirMoneda () {
@@ -90,7 +89,7 @@ public class MaquinaVending {
 			for (int j = 1; j <= 4; j++) {
 				String codigo = String.valueOf(i) + j;
 				Ranuras ranura = stock.get(codigo);
-				if (stock.containsValue(ranura)) {
+				if (ranura.getProducto() != null) {
 					System.out.println("  " + codigo
 							+ "\t" + ranura.getProducto().getNombre()
 							+ "\t\t" + ranura.getProducto().getPrecio()
@@ -113,10 +112,10 @@ public class MaquinaVending {
 		do {
 			System.out.println("Seleccione una opcion: ");
 			elegir = ScannerGlobal.sc.nextInt();
-			if (elegir > 0 && elegir < 5) {
+			if (elegir < 1 && elegir > 4) {
 				System.out.println("Eleccion erronea");
 			}
-		} while (elegir > 0 && elegir < 5);
+		} while (elegir < 1 && elegir > 4);
 		
 		eleccionUsuario(elegir);
 	}

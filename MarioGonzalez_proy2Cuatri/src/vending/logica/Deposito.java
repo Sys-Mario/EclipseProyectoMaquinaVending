@@ -9,6 +9,17 @@ public class Deposito {
 	private Map<Monedas, Integer> monedas;
 	private BigDecimal recaudacionTotal;
 	
+	public Deposito(int cantidad) {
+		this.monedas = rellenarMap(cantidad);
+		this.recaudacionTotal = new BigDecimal("0");
+	}
+
+	public Map<Monedas, Integer> rellenarMap (int cantidad) {
+		
+		
+		return monedas;
+	}
+	
 	public List<BigDecimal> calcularCambioNecesario (BigDecimal importeCliente){
 		
 		

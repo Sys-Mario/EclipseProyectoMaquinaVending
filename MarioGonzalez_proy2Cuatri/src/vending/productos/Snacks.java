@@ -23,12 +23,12 @@ public class Snacks extends Productos {
 	@Override
 	public BigDecimal calcularPrecio(BigDecimal precio) {
 		if (this.getTamanio() == TamanioSnacks.L) {
-			precio.multiply(new BigDecimal("0.2"));
+			precio = precio.multiply(new BigDecimal("1.2"));
 		}
 		if (this.getTamanio() == TamanioSnacks.S) {
-			precio.divide(new BigDecimal("0.1"));
+			precio = precio.multiply(new BigDecimal("0.90"));
 		}
-		return precio;
+		return precio.setScale(2, RoundingMode.HALF_UP);
 	}
 
 }

@@ -35,19 +35,18 @@ public class Bebidas extends Productos {
 
 	@Override
 	public BigDecimal calcularPrecio(BigDecimal precio) {
-		BigDecimal diezPorCiento = new BigDecimal("0.1");
 		if (isAzucarada()) {
 			if (getMililitros() >= 500) {
-				precio.multiply(new BigDecimal("0.2"));
+				precio = precio.multiply(new BigDecimal("1.2"));
 			} else {
-				precio.multiply(diezPorCiento);
+				precio = precio.multiply(new BigDecimal("1.1"));
 			}
 		} else {
 			if (getMililitros() < 500) {
-				precio.divide(diezPorCiento);
+				precio = precio.multiply(new BigDecimal("0.85"));
 			}
 		}
-		return precio;
+		return precio.setScale(2, RoundingMode.HALF_UP);
 	}
 
 }
