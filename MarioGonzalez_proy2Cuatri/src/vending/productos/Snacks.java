@@ -4,28 +4,28 @@ import java.math.*;
 
 public class Snacks extends Productos {
 
-	private TamañoSnacks tamaño;
+	private TamanioSnacks tamanio;
 	
-	public Snacks(String id, String nombre, TamañoSnacks tamaño) {
+	public Snacks(String id, String nombre, TamanioSnacks tamanio) {
 		super(id, nombre);
-		setTamaño(tamaño);
+		setTamanio(tamanio);
 		setPrecio(calcularPrecio(new BigDecimal("1.5")));
 	}
 	
-	public TamañoSnacks getTamaño() {
-		return tamaño;
+	public TamanioSnacks getTamanio() {
+		return tamanio;
 	}
 
-	public void setTamaño(TamañoSnacks tamaño) {
-		this.tamaño = tamaño;
+	public void setTamanio(TamanioSnacks tamanio) {
+		this.tamanio = tamanio;
 	}
 
 	@Override
 	public BigDecimal calcularPrecio(BigDecimal precio) {
-		if (this.getTamaño() == TamañoSnacks.L) {
+		if (this.getTamanio() == TamanioSnacks.L) {
 			precio.multiply(new BigDecimal("0.2"));
 		}
-		if (this.getTamaño() == TamañoSnacks.S) {
+		if (this.getTamanio() == TamanioSnacks.S) {
 			precio.divide(new BigDecimal("0.1"));
 		}
 		return precio;

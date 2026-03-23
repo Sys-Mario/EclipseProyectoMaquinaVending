@@ -51,4 +51,11 @@ public class Ranuras {
 	public void reducirStock () {
 		this.cantidad--;
 	}
+
+	@Override
+	public String toString() {
+		return producto + " " + cantidad;
+	}
+	
+	
 }

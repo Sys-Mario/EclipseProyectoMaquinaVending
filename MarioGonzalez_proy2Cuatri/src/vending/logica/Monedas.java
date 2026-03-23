@@ -13,7 +13,7 @@ public enum Monedas {
 	
 	private final BigDecimal valor;
 	
-	Monedas(String valorTexto) {
+	Monedas (String valorTexto) {
 	    this.valor = new BigDecimal(valorTexto);
 	}
 	

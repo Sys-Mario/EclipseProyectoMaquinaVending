@@ -1,6 +1,6 @@
 package vending.productos;
 
-public enum TamañoSnacks {
+public enum TamanioSnacks {
 
 	L,
 	M,

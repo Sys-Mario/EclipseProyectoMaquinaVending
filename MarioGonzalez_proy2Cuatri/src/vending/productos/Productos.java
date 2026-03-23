@@ -13,6 +13,10 @@ public abstract class Productos {
 		setId(id);
 		setNombre(nombre);
 	}
+	
+	public Productos(String nombre) {
+		setNombre(nombre);
+	}
 
 	public String getId() {
 		return id;
@@ -44,6 +48,11 @@ public abstract class Productos {
 	public boolean equals(Object obj) {
 		Productos otroPro = (Productos) obj;
 		return this.id.equals(otroPro.id);
+	}
+
+	@Override
+	public String toString() {
+		return nombre + " " + precio;
 	}
 	
 }
