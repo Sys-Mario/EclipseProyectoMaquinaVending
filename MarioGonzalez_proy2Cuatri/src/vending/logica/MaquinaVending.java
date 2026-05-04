@@ -97,7 +97,6 @@ public class MaquinaVending {
 				} else {
 					System.out.println("  " + codigo + "\t---\t\t---\tVACÍO");
 				}
-				
 			}
 		}
 		System.out.println("====================================================");
@@ -113,7 +112,9 @@ public class MaquinaVending {
 			System.out.println("Seleccione una opcion: ");
 			elegir = ScannerGlobal.sc.nextInt();
 			if (elegir < 1 && elegir > 4) {
+				System.out.println();
 				System.out.println("Eleccion erronea");
+				System.out.println();
 			}
 		} while (elegir < 1 && elegir > 4);
 		
@@ -123,8 +124,20 @@ public class MaquinaVending {
 	private void eleccionUsuario (int elegido) {
 		switch (elegido) {
 			case 1:
-		
-		
+				
+				break;
+			case 2:
+				
+				break;
+			case 3:
+				
+				break;
+			case 4:
+				
+				break;
+			default:
+				System.out.println("Eleccion erronea");
+				mostrarTodo ();
 		}
 			
 	}

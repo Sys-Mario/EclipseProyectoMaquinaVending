@@ -1,6 +1,5 @@
 package vending.logica;
 
-import java.util.*;
 import vending.productos.Productos;
 
 public class Ranuras {
@@ -35,6 +34,7 @@ public class Ranuras {
 			do {
 				System.out.println("ERROR CON LA CANTIDAD INTRODUCIDA ---> ");
 				System.out.println("Introduzcala de nuevo: ");
+				cantidad = ScannerGlobal.sc.nextInt();
 			} while (cantidad <= getMAX_PRODUCTOS() && cantidad > 0);
 		} else {
 			this.cantidad = cantidad;
