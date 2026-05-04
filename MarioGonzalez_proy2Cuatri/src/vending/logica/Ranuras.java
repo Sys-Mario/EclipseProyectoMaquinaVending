@@ -31,14 +31,11 @@ public class Ranuras {
 	}
 
 	public void setCantidad(int cantidad) {
-		if (cantidad > getMAX_PRODUCTOS()) {
-			this.cantidad = 10;
-		} else if (cantidad >= -10 && cantidad <= 0) {
-			if (cantidad == 0) {
-				this.cantidad = 1;
-			} else {
-				this.cantidad = cantidad * -1;
-			}
+		if (cantidad > getMAX_PRODUCTOS() && cantidad <= 0) {
+			do {
+				System.out.println("ERROR CON LA CANTIDAD INTRODUCIDA ---> ");
+				System.out.println("Introduzcala de nuevo: ");
+			} while (cantidad <= getMAX_PRODUCTOS() && cantidad > 0);
 		} else {
 			this.cantidad = cantidad;
 		}
