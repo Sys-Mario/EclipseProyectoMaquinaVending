@@ -15,8 +15,9 @@ public class MaquinaVending {
 	
 	public MaquinaVending() {
 		this.stock = new HashMap<>();
-		this.inicializarEstructura();
 		this.depositoMonedas = new Deposito (20);
+		// this.inicializarEstructura();
+		this.inicializarEstructuraPrueba();
 		this.creditoCliente = new BigDecimal("0");
 	}
 	
@@ -44,7 +45,18 @@ public class MaquinaVending {
 		this.creditoCliente = creditoCliente;
 	}
 
+	// Inicializa la infraestructura de la web.
+	
 	public void inicializarEstructura () {
+		for (char i = 'A'; i <= 'D'; i++) {
+			for (int j = 1; j <= 4; j++) {
+				String codigo = String.valueOf(i) + j;
+				stock.put(codigo, new Ranuras(null, 0));
+			}
+		}
+	}
+	
+	public void inicializarEstructuraPrueba () {
 		for (char i = 'A'; i <= 'D'; i++) {
 			for (int j = 1; j <= 4; j++) {
 				String codigo = String.valueOf(i) + j;
@@ -56,6 +68,8 @@ public class MaquinaVending {
 	    
 	    stock.put("B1", new Ranuras(new Snacks("P03", "Chips", TamanioSnacks.M), 8));
 	    stock.put("B2", new Ranuras(new Snacks("P04", "Choco", TamanioSnacks.L), 3));
+	    
+	    depositoMonedas.rellenarMap(10);
 	}
 	
 	public void comprarProducto (String codigo) {
@@ -67,14 +81,59 @@ public class MaquinaVending {
 		}
 	}
 	
-	public void introducirMoneda () {
-		System.out.println("Que moneda te interesa meter? "
-				+ "\nA. 2€\tB. 1€\tC. 0.5€"
-				+ "\nD. 0.20€\tE. 0.1€\t 0.05€");
-		String eleccion = ScannerGlobal.sc.next();
-
+	public void introducirMoneda() {
+		String eleccion = null;
 		
-	//	depositoMonedas.añadirMonedas(, 1);
+		do {
+			System.out.println("Que moneda te interesa meter? "
+		            + "\nA. 2€\tB. 1€\tC. 0.5€"
+		            + "\nD. 0.20€\tE. 0.1€\tF. 0.05€"
+		            + "\n\tS. Salir");
+		    
+		    eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
+		    
+		    Monedas monedaSeleccionada = null;
+		    BigDecimal valorParaSumar = BigDecimal.ZERO;
+
+		    switch (eleccion) {
+		        case "A": 
+		            monedaSeleccionada = Monedas.DOS_EUROS;
+		            valorParaSumar = new BigDecimal("2.00");
+		            break;
+		        case "B": 
+		            monedaSeleccionada = Monedas.UN_EURO;
+		            valorParaSumar = new BigDecimal("1.00");
+		            break;
+		        case "C": 
+		            monedaSeleccionada = Monedas.CINCUENTA_CENT;
+		            valorParaSumar = new BigDecimal("0.50");
+		            break;
+		        case "D": 
+		            monedaSeleccionada = Monedas.VEINTE_CENT;
+		            valorParaSumar = new BigDecimal("0.20");
+		            break;
+		        case "E": 
+		            monedaSeleccionada = Monedas.DIEZ_CENT;
+		            valorParaSumar = new BigDecimal("0.10");
+		            break;
+		        case "F": 
+		            monedaSeleccionada = Monedas.CINCO_CENT;
+		            valorParaSumar = new BigDecimal("0.05");
+		            break;
+		        case "S": 
+		        	mostrarTodo();
+		            break;
+		        default:
+		            System.out.println("Opción no válida.");
+		    }
+
+			depositoMonedas.añadirMonedas(monedaSeleccionada, 1);
+			
+			this.creditoCliente = this.creditoCliente.add(valorParaSumar);
+			
+			System.out.println("Crédito total: " + this.creditoCliente + "€");
+		} while (eleccion != "S");
+		
 	}
 	
 	public void mostrarTodo () {
@@ -116,7 +175,7 @@ public class MaquinaVending {
 				System.out.println("Eleccion erronea");
 				System.out.println();
 			}
-		} while (elegir < 1 && elegir > 4);
+		} while (elegir < 1 || elegir > 4);
 		
 		eleccionUsuario(elegir);
 	}
@@ -124,7 +183,7 @@ public class MaquinaVending {
 	private void eleccionUsuario (int elegido) {
 		switch (elegido) {
 			case 1:
-				
+				introducirMoneda();
 				break;
 			case 2:
 				

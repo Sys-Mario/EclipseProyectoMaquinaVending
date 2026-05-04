@@ -1,6 +1,5 @@
 package vending.logica;
 
 public enum Monedas {
-	
-	A, B, C, D, E, F, G, H
+    DOS_EUROS, UN_EURO, CINCUENTA_CENT, VEINTE_CENT, DIEZ_CENT, CINCO_CENT
 }

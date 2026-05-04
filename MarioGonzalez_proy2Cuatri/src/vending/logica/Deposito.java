@@ -11,24 +11,26 @@ public class Deposito {
 	
 	public Deposito(int cantidadInicial) {
 		this.monedas = new EnumMap<>(Monedas.class);
-		rellenarMap(cantidadInicial);
-
+		if (cantidadInicial <= 0) {
+			rellenarMap();
+		} else {
+			rellenarMap(cantidadInicial);
+		}
 	}
 
+	// Rellenan el mapa de una cantidad asociada de monedas o por defecto de 10.
+	
+	public void rellenarMap ( ) {
+		for (Monedas m : Monedas.values()) {
+            monedas.put(m, 10);
+        }
+	}
+	
 	public void rellenarMap (int cantidad) {
 		for (Monedas m : Monedas.values()) {
             monedas.put(m, cantidad);
         }
 	}
-	
-	public BigDecimal getTotal() {
-        BigDecimal total = BigDecimal.ZERO;
-        for (Map.Entry<Monedas, Integer> entry : monedas.entrySet()) {
-            BigDecimal valor = entry.getKey().getValor();
-            total = total.add(valor.multiply(new BigDecimal(entry.getValue())));
-        }
-        return total;
-    }
 	
 	public List<BigDecimal> calcularCambioNecesario (BigDecimal importeCliente){
 		
@@ -45,7 +47,7 @@ public class Deposito {
 	}
 	
 	public void añadirMonedas (Monedas moneda, int cantidad) {
-		int monedasActuales = monedas.get(moneda);
+		int monedasActuales = monedas.getOrDefault(moneda, 0);
 		monedas.put(moneda, monedasActuales + cantidad);
 	}
 
