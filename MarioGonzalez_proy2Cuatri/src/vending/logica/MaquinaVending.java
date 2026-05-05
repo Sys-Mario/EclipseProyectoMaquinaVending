@@ -72,77 +72,13 @@ public class MaquinaVending {
 	    depositoMonedas.rellenarMap(10);
 	}
 	
-	public void comprarProducto (String codigo) {
-		if (stock.containsKey(codigo)) {
-			depositoMonedas.tieneCambioSuficiente(creditoCliente);
-			
-		} else {
-			System.out.println("Esa ranura no tiene stock!");
-		}
-	}
-	
-	public void introducirMoneda() {
-		String eleccion = null;
-		
-		do {
-			System.out.println("Que moneda te interesa meter? "
-		            + "\nA. 2€\tB. 1€\tC. 0.5€"
-		            + "\nD. 0.20€\tE. 0.1€\tF. 0.05€"
-		            + "\n\tS. Salir");
-		    
-		    eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
-		    
-		    Monedas monedaSeleccionada = null;
-		    BigDecimal valorParaSumar = BigDecimal.ZERO;
-
-		    switch (eleccion) {
-		        case "A": 
-		            monedaSeleccionada = Monedas.DOS_EUROS;
-		            valorParaSumar = new BigDecimal("2.00");
-		            break;
-		        case "B": 
-		            monedaSeleccionada = Monedas.UN_EURO;
-		            valorParaSumar = new BigDecimal("1.00");
-		            break;
-		        case "C": 
-		            monedaSeleccionada = Monedas.CINCUENTA_CENT;
-		            valorParaSumar = new BigDecimal("0.50");
-		            break;
-		        case "D": 
-		            monedaSeleccionada = Monedas.VEINTE_CENT;
-		            valorParaSumar = new BigDecimal("0.20");
-		            break;
-		        case "E": 
-		            monedaSeleccionada = Monedas.DIEZ_CENT;
-		            valorParaSumar = new BigDecimal("0.10");
-		            break;
-		        case "F": 
-		            monedaSeleccionada = Monedas.CINCO_CENT;
-		            valorParaSumar = new BigDecimal("0.05");
-		            break;
-		        case "S": 
-		        	mostrarTodo();
-		            break;
-		        default:
-		            System.out.println("Opción no válida.");
-		    }
-
-			depositoMonedas.añadirMonedas(monedaSeleccionada, 1);
-			
-			this.creditoCliente = this.creditoCliente.add(valorParaSumar);
-			
-			System.out.println("Crédito total: " + this.creditoCliente + "€");
-		} while (eleccion != "S");
-		
-	}
-	
 	public void mostrarTodo () {
 		System.out.println("****************************************************"
 				+ "\n\tBIENVENIDO A EXPO-VENDING"
 				+ "\n****************************************************");
 		System.out.println();
 		System.out.println("******************** PRODUCTOS *********************"
-				+ "\n  POS\tNOMBRE\t\tPRECIO\tSTOCK");
+				+ "\n  CODE\tNOMBRE\t\tPRECIO\tSTOCK");
 		System.out.println("====================================================");
 		for (char i = 'A'; i <= 'D'; i++) {
 			for (int j = 1; j <= 4; j++) {
@@ -159,18 +95,18 @@ public class MaquinaVending {
 			}
 		}
 		System.out.println("====================================================");
-		System.out.println(); System.out.println();
-		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente
-				+ "\n------------------------------------"
-				+ "\n1. Insertar Monedas"
-				+ "\n2. Seleccionar Producto (Comprar)"
-				+ "\n3. Devolver Crédito"
-				+ "\n4. Modo Administrador (Requiere PIN)");
+		System.out.println();
+		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente);
 		int elegir;
 		do {
-			System.out.println("Seleccione una opcion: ");
+			System.out.print("\n------------------------------------"
+					+ "\n1. Insertar Monedas"
+					+ "\n2. Seleccionar Producto (Comprar)"
+					+ "\n3. Devolver Crédito"
+					+ "\n4. Modo Administrador (Requiere PIN)"
+					+ "\nSeleccione una opcion: ");
 			elegir = ScannerGlobal.sc.nextInt();
-			if (elegir < 1 && elegir > 4) {
+			if (elegir < 1 || elegir > 4) {
 				System.out.println();
 				System.out.println("Eleccion erronea");
 				System.out.println();
@@ -201,5 +137,71 @@ public class MaquinaVending {
 			
 	}
 	
+	/**
+	 * Permite al usuario insertar monedas actualizando el crédito y el depósito.
+	 */
+	public void introducirMoneda() {
+		System.out.println();
+	    String eleccion = "";
+	    
+	    Map<String, Monedas> opciones = inicializarOpcionesMonedas();
+
+	    do {
+	        System.out.println(" ------     MENU DE INSERCIÓN     ------ "
+	        		+ "\n A. 2€\t\tB. 1€\t\tC. 0.50€"
+	        		+ "\n D. 0.20€ \tE. 0.10€\tF. 0.05€"
+	        		+ "\n  -------\tS. Salir\t-------");
+	        System.out.print("Introduzca opción: ");
+	        
+	        eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
+
+	        if (!eleccion.equals("S")) {
+	            Monedas moneda = opciones.get(eleccion);
+
+	            if (moneda != null) {
+	                BigDecimal valor = depositoMonedas.getValorMoneda(moneda);
+	                
+	                depositoMonedas.añadirMonedas(moneda, 1);
+	                this.creditoCliente = this.creditoCliente.add(valor);
+
+	                System.out.println("\n(+) Ingresado: " + valor + "€");
+	            } else {
+	                System.out.println("\nOpción inválida. Pruebe otra...");
+	            }
+	            System.out.println("Crédito actual: " + this.creditoCliente + "€\n");
+	        }
+	        // System.out.println(depositoMonedas.toString());
+	    } while (!eleccion.equals("S"));
+	    
+	    mostrarTodo();
+	}
+
+	/**
+	 * Método privado auxiliar para no repetir la creación del mapa.
+	 */
+	private Map<String, Monedas> inicializarOpcionesMonedas() {
+	    Map<String, Monedas> mapa = new HashMap<>();
+	    mapa.put("A", Monedas.DOS_EUROS);
+	    mapa.put("B", Monedas.UN_EURO);
+	    mapa.put("C", Monedas.CINCUENTA_CENT);
+	    mapa.put("D", Monedas.VEINTE_CENT);
+	    mapa.put("E", Monedas.DIEZ_CENT);
+	    mapa.put("F", Monedas.CINCO_CENT);
+	    return mapa;
+	}
+	/*
+	public void comprarProducto () {
+		
+		System.out.println("");
+		
+		
+		if (stock.containsKey(codigo)) {
+			depositoMonedas.tieneCambioSuficiente(creditoCliente);
+			
+		} else {
+			System.out.println("Esa ranura no tiene stock!");
+		}
+	}
+	*/
 	
 }

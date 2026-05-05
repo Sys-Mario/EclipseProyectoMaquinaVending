@@ -59,4 +59,25 @@ public class Deposito {
 		this.monedas = monedas;
 	}
 	
+	/**
+	 * Traduce el Enum a un valor numérico para hacer cálculos.
+	 * Centralizamos esto aquí para no repetir los switch en toda la aplicación.
+	 */
+	public BigDecimal getValorMoneda(Monedas m) {
+	    return switch (m) {
+	        case DOS_EUROS      -> new BigDecimal("2.00");
+	        case UN_EURO        -> new BigDecimal("1.00");
+	        case CINCUENTA_CENT -> new BigDecimal("0.50");
+	        case VEINTE_CENT    -> new BigDecimal("0.20");
+	        case DIEZ_CENT      -> new BigDecimal("0.10");
+	        case CINCO_CENT     -> new BigDecimal("0.05");
+	        default             -> BigDecimal.ZERO;
+	    };
+	}
+
+	@Override
+	public String toString() {
+		return "Deposito [monedas=" + monedas + "]";
+	}
+	
 }
