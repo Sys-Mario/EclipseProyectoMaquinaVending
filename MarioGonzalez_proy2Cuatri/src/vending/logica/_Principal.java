@@ -5,7 +5,7 @@ public class _Principal {
 		
 		MaquinaVending mv = new MaquinaVending ();
 		
-		mv.mostrarTodo();
+		mv.iniciar();
 		
 	}
 }

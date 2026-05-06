@@ -32,18 +32,47 @@ public class Deposito {
         }
 	}
 	
-	public List<BigDecimal> calcularCambioNecesario (BigDecimal importeCliente){
-		
-		
-		
-		return null;
+	public Map<Monedas, Integer> calcularCambioNecesario(BigDecimal importeADevolver) {
+	    Map<Monedas, Integer> cambioAEntregar = new EnumMap<>(Monedas.class);
+	    BigDecimal restante = importeADevolver;
+
+	    Monedas[] todasLasMonedas = Monedas.values();
+
+	    for (Monedas m : todasLasMonedas) {
+	        BigDecimal valorM = getValorMoneda(m);
+	        int cantidadDisponible = monedas.get(m);
+	        int monedasAEntregar = 0;
+
+	        while (restante.compareTo(valorM) >= 0 && cantidadDisponible > 0) {
+	            restante = restante.subtract(valorM);
+	            cantidadDisponible--;
+	            monedasAEntregar++;
+	        }
+
+	        if (monedasAEntregar > 0) {
+	            cambioAEntregar.put(m, monedasAEntregar);
+	            monedas.put(m, cantidadDisponible);
+	        }
+	    }
+
+	    if (restante.compareTo(BigDecimal.ZERO) > 0) {
+	        return null;
+	    }
+
+	    return cambioAEntregar;
 	}
-	
-	public boolean tieneCambioSuficiente (BigDecimal importeCliente) {
-		
-		
-		
-		return false;
+
+	public boolean tieneCambioSuficiente(BigDecimal importeADevolver) {
+	    BigDecimal restante = importeADevolver;
+	    for (Monedas m : Monedas.values()) {
+	        BigDecimal valorM = getValorMoneda(m);
+	        int disponible = monedas.get(m);
+	        while (restante.compareTo(valorM) >= 0 && disponible > 0) {
+	            restante = restante.subtract(valorM);
+	            disponible--;
+	        }
+	    }
+	    return restante.compareTo(BigDecimal.ZERO) == 0;
 	}
 	
 	public void añadirMonedas (Monedas moneda, int cantidad) {

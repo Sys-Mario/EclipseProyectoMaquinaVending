@@ -72,7 +72,7 @@ public class MaquinaVending {
 	    depositoMonedas.rellenarMap(10);
 	}
 	
-	public void mostrarTodo () {
+	public void imprimirEstadoMaquina () {
 		System.out.println("****************************************************"
 				+ "\n\tBIENVENIDO A EXPO-VENDING"
 				+ "\n****************************************************");
@@ -97,23 +97,34 @@ public class MaquinaVending {
 		System.out.println("====================================================");
 		System.out.println();
 		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente);
-		int elegir;
-		do {
+			
+	}
+	
+	public void iniciar () {
+		int elegir = 0;
+		
+		while (elegir != 4) {
+			imprimirEstadoMaquina ();
 			System.out.print("\n------------------------------------"
 					+ "\n1. Insertar Monedas"
 					+ "\n2. Seleccionar Producto (Comprar)"
 					+ "\n3. Devolver Crédito"
 					+ "\n4. Modo Administrador (Requiere PIN)"
 					+ "\nSeleccione una opcion: ");
-			elegir = ScannerGlobal.sc.nextInt();
-			if (elegir < 1 || elegir > 4) {
-				System.out.println();
-				System.out.println("Eleccion erronea");
-				System.out.println();
-			}
-		} while (elegir < 1 || elegir > 4);
-		
-		eleccionUsuario(elegir);
+			if (ScannerGlobal.sc.hasNextInt()) {
+	            elegir = ScannerGlobal.sc.nextInt();
+	            ScannerGlobal.sc.nextLine(); 
+	            
+	            if (elegir < 1 || elegir > 4) {
+	                System.out.println("\nEleccion erronea\n");
+	            } else {
+	                eleccionUsuario (elegir);
+	            }
+	        } else {
+	            System.out.println("Por favor, introduce un número.");
+	            ScannerGlobal.sc.next();
+	        }
+		}		
 	}
 	
 	private void eleccionUsuario (int elegido) {
@@ -122,17 +133,16 @@ public class MaquinaVending {
 				introducirMoneda();
 				break;
 			case 2:
-				
+				comprarProducto();
 				break;
 			case 3:
-				
+				devolverCambio();
 				break;
 			case 4:
 				
 				break;
 			default:
 				System.out.println("Eleccion erronea");
-				mostrarTodo ();
 		}
 			
 	}
@@ -148,7 +158,7 @@ public class MaquinaVending {
 
 	    do {
 	        System.out.println(" ------     MENU DE INSERCIÓN     ------ "
-	        		+ "\n A. 2€\t\tB. 1€\t\tC. 0.50€"
+	        		+ "\n A. 2.00€\tB. 1.00€\tC. 0.50€"
 	        		+ "\n D. 0.20€ \tE. 0.10€\tF. 0.05€"
 	        		+ "\n  -------\tS. Salir\t-------");
 	        System.out.print("Introduzca opción: ");
@@ -173,7 +183,6 @@ public class MaquinaVending {
 	        // System.out.println(depositoMonedas.toString());
 	    } while (!eleccion.equals("S"));
 	    
-	    mostrarTodo();
 	}
 
 	/**
@@ -189,19 +198,88 @@ public class MaquinaVending {
 	    mapa.put("F", Monedas.CINCO_CENT);
 	    return mapa;
 	}
-	/*
-	public void comprarProducto () {
-		
-		System.out.println("");
-		
-		
-		if (stock.containsKey(codigo)) {
-			depositoMonedas.tieneCambioSuficiente(creditoCliente);
-			
-		} else {
-			System.out.println("Esa ranura no tiene stock!");
-		}
-	}
-	*/
 	
+	public void comprarProducto() {
+	    String eleccion;
+	    
+	    
+	    
+	    do {
+	        System.out.println("");
+	        System.out.println(" ------     MENU DE COMPRA     ------ "
+	                + "\nDime el código del producto que desea comprar.");
+	        System.out.print("Introduzca código: ");
+	        
+	        eleccion = ScannerGlobal.sc.nextLine().toUpperCase().trim();
+	        
+	        if (!stock.containsKey(eleccion)) {
+	            System.out.println("El código es incorrecto, prueba de nuevo...");
+	        }
+	    } while (!stock.containsKey(eleccion));
+	    
+	    Ranuras ranuraSeleccionada = stock.get(eleccion);
+	    Productos productoSeleccionado = ranuraSeleccionada.getProducto();
+	    System.out.println();
+	    
+	    if (productoSeleccionado != null) {
+	        System.out.println("Procesando la compra de " + productoSeleccionado.getNombre() + "...");
+	        
+	        if (ranuraSeleccionada.hayStock()) {
+	            BigDecimal precio = productoSeleccionado.getPrecio();
+
+	            if (creditoCliente.compareTo(precio) >= 0) {
+
+	                BigDecimal cambioADevolver = creditoCliente.subtract(precio);
+
+	                if (depositoMonedas.tieneCambioSuficiente(cambioADevolver)) {
+	                    
+	                    System.out.println("La compra ha sido un éxito.");
+	                    
+	                    creditoCliente = creditoCliente.subtract(precio);
+	                    ranuraSeleccionada.reducirStock();
+	                    
+	                    devolverCambio(); 
+
+	                } else {
+	                    System.out.println("ERROR: La máquina no dispone de cambio suficiente.");
+	                    System.out.println("Operación cancelada. Recupere su crédito en el menú principal.");
+	                }
+
+	            } else {
+	                System.out.println("No tienes crédito suficiente (Faltan: " + precio.subtract(creditoCliente) + "€)");
+	            }
+	        } else {
+	            System.out.println("Lo sentimos, no queda stock de este producto.");
+	        }
+	    } else {
+	        System.out.println("En esa ranura no hay ningún producto asociado.");
+	    }
+
+	}
+	
+	public void devolverCambio() {
+		System.out.println();
+		 
+	    if (creditoCliente.compareTo(BigDecimal.ZERO) <= 0) {
+	        System.out.println("No hay crédito que devolver.");
+	    } else {
+	    	Map<Monedas, Integer> monedasEntregadas = depositoMonedas.calcularCambioNecesario(creditoCliente);
+
+		    if (monedasEntregadas != null) {
+		        System.out.println("--- DEVOLVIENDO CRÉDITO ---");
+		        for (Map.Entry<Monedas, Integer> entrada : monedasEntregadas.entrySet()) {
+		            Monedas m = entrada.getKey();
+		            int cant = entrada.getValue();
+		            
+		            System.out.println("  " + cant + " moneda(s) de " + depositoMonedas.getValorMoneda(m) + "€");
+		        }
+		        creditoCliente = BigDecimal.ZERO;
+		    } else {
+		        System.out.println("ERROR CRÍTICO: La máquina no tiene cambio suficiente.");
+		        System.out.println("Por favor, llame al servicio técnico. Su crédito de " + creditoCliente + "€ se mantiene.");
+		    }
+	    }
+	    System.out.println("\nPulse Enter para volver al menú...");
+	    ScannerGlobal.sc.nextLine();
+	}
 }
