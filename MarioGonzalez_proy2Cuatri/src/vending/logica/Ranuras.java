@@ -21,10 +21,6 @@ public class Ranuras {
 		return cantidad;
 	}
 	
-	private int getMAX_PRODUCTOS() {
-		return MAX_PRODUCTOS;
-	}
-	
 	public void setProducto(Productos producto) {
 		this.producto = producto;
 	}
@@ -58,6 +54,15 @@ public class Ranuras {
 		this.cantidad--;
 	}
 
+	public boolean estaVacia() {
+		return getProducto() == null;
+	}
+	
+	public void vaciar () {
+		this.producto = null;
+		this.cantidad = 0;
+	}
+	
 	@Override
 	public String toString() {
 		return producto + " " + cantidad;

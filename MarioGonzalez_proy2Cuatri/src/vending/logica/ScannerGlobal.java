@@ -10,4 +10,9 @@ public class ScannerGlobal {
 	public static void cerrar () {
 		sc.close();
 	}
+	
+	public static void pulseEnter() {
+		System.out.println("\nPulse Enter para volver al menú...");
+	    ScannerGlobal.sc.nextLine();
+	}
 }

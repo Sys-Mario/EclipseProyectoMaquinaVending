@@ -8,181 +8,46 @@ import vending.productos.*;
 
 public class MaquinaVending {
 
-	private Map <String, Ranuras> stock;
+	private Stock sistemaStock;
 	private Deposito depositoMonedas;
 	private BigDecimal creditoCliente;
-	private String pin_admin = "1234";
+	private String pinAdmin = "1234";
 	
 	public MaquinaVending() {
-		this.stock = new HashMap<>();
+		this.sistemaStock = new Stock();
 		this.depositoMonedas = new Deposito (20);
-		// this.inicializarEstructura();
-		this.inicializarEstructuraPrueba();
-		this.creditoCliente = new BigDecimal("0");
+		this.creditoCliente = BigDecimal.ZERO;
 	}
 	
-	public Map<String, Ranuras> getStock() {
-		return stock;
-	}
-
-	public Deposito getDepositoMonedas() {
-		return depositoMonedas;
-	}
-
-	public BigDecimal getCreditoCliente() {
-		return creditoCliente;
-	}
-
-	public void setStock(Map<String, Ranuras> stock) {
-		this.stock = stock;
-	}
-
-	public void setDepositoMonedas(Deposito depositoMonedas) {
-		this.depositoMonedas = depositoMonedas;
-	}
-
-	public void setCreditoCliente(BigDecimal creditoCliente) {
-		this.creditoCliente = creditoCliente;
-	}
-
-	// Inicializa la infraestructura de la web.
-	
-	public void inicializarEstructura () {
-		for (char i = 'A'; i <= 'D'; i++) {
-			for (int j = 1; j <= 4; j++) {
-				String codigo = String.valueOf(i) + j;
-				stock.put(codigo, new Ranuras(null, 0));
-			}
-		}
-	}
-	
-	public void inicializarEstructuraPrueba () {
-		for (char i = 'A'; i <= 'D'; i++) {
-			for (int j = 1; j <= 4; j++) {
-				String codigo = String.valueOf(i) + j;
-				stock.put(codigo, new Ranuras(null, 0));
-			}
-		}
-		stock.put("A1", new Ranuras(new Bebidas("P01", "Coca", 330, true), 5));
-	    stock.put("A2", new Ranuras(new Bebidas("P02", "Agua", 500, false), 10));
-	    
-	    stock.put("B1", new Ranuras(new Snacks("P03", "Chips", TamanioSnacks.M), 8));
-	    stock.put("B2", new Ranuras(new Snacks("P04", "Choco", TamanioSnacks.L), 3));
-	    
-	    depositoMonedas.rellenarMap(10);
-	}
-	
-	public void imprimirEstadoMaquina () {
-		System.out.println("****************************************************"
-				+ "\n\tBIENVENIDO A EXPO-VENDING"
-				+ "\n****************************************************");
-		System.out.println();
-		System.out.println("******************** PRODUCTOS *********************"
-				+ "\n  CODE\tNOMBRE\t\tPRECIO\tSTOCK");
-		System.out.println("====================================================");
-		for (char i = 'A'; i <= 'D'; i++) {
-			for (int j = 1; j <= 4; j++) {
-				String codigo = String.valueOf(i) + j;
-				Ranuras ranura = stock.get(codigo);
-				if (ranura.getProducto() != null) {
-					System.out.println("  " + codigo
-							+ "\t" + ranura.getProducto().getNombre()
-							+ "\t\t" + ranura.getProducto().getPrecio()
-							+ "\t" + ranura.getCantidad());
-				} else {
-					System.out.println("  " + codigo + "\t---\t\t---\tVACÍO");
-				}
-			}
-		}
-		System.out.println("====================================================");
-		System.out.println();
-		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente + "€");
-			
-	}
-	
-	public void iniciar () {
-		int elegir = 0;
-		
-		while (elegir != 4) {
-			imprimirEstadoMaquina ();
-			System.out.print("\n------------------------------------"
-					+ "\n1. Insertar Monedas"
-					+ "\n2. Seleccionar Producto (Comprar)"
-					+ "\n3. Devolver Crédito"
-					+ "\n4. Modo Administrador (Requiere PIN)"
-					+ "\nSeleccione una opcion: ");
-			if (ScannerGlobal.sc.hasNextInt()) {
-	            elegir = ScannerGlobal.sc.nextInt();
-	            ScannerGlobal.sc.nextLine(); 
-	            
-	            if (elegir < 1 || elegir > 4) {
-	                System.out.println("\nEleccion erronea\n");
-	            } else {
-	                eleccionUsuario (elegir);
-	            }
-	        } else {
-	            System.out.println("Por favor, introduce un número.");
-	            ScannerGlobal.sc.next();
-	        }
-		}		
-	}
-	
-	private void eleccionUsuario (int elegido) {
-		switch (elegido) {
-			case 1:
-				introducirMoneda();
-				break;
-			case 2:
-				comprarProducto();
-				break;
-			case 3:
-				devolverCambio();
-				break;
-			case 4:
-				
-				break;
-			default:
-				System.out.println("Eleccion erronea");
-		}
-			
-	}
+	public Stock getSistemaStock() { return sistemaStock; }
+	public Deposito getDepositoMonedas() { return depositoMonedas; }
+	public BigDecimal getCreditoCliente() { return creditoCliente; }
+	public void setCreditoCliente(BigDecimal creditoCliente) { this.creditoCliente = creditoCliente; }
+	public String getPinAdmin() { return pinAdmin; }
+	public void setPinAdmin(String pinAdmin) { this.pinAdmin = pinAdmin; }
 	
 	/**
 	 * Permite al usuario insertar monedas actualizando el crédito y el depósito.
 	 */
-	public void introducirMoneda() {
-		System.out.println();
-	    String eleccion = "";
-	    
-	    Map<String, Monedas> opciones = inicializarOpcionesMonedas();
+	public void introducirMoneda(String eleccion) {
+		Map<String, Monedas> opciones = inicializarOpcionesMonedas();
 
-	    do {
-	        System.out.println(" ------     MENU DE INSERCIÓN     ------ "
-	        		+ "\n A. 2.00€\tB. 1.00€\tC. 0.50€"
-	        		+ "\n D. 0.20€ \tE. 0.10€\tF. 0.05€"
-	        		+ "\n  -------\tS. Salir\t-------");
-	        System.out.print("Introduzca opción: ");
-	        
-	        eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
+        if (!eleccion.equals("S")) {
+            Monedas moneda = opciones.get(eleccion);
 
-	        if (!eleccion.equals("S")) {
-	            Monedas moneda = opciones.get(eleccion);
+            if (moneda != null) {
+                BigDecimal valor = depositoMonedas.getValorMoneda(moneda);
+                
+                depositoMonedas.añadirMonedas(moneda, 1);
+                this.creditoCliente = this.creditoCliente.add(valor);
 
-	            if (moneda != null) {
-	                BigDecimal valor = depositoMonedas.getValorMoneda(moneda);
-	                
-	                depositoMonedas.añadirMonedas(moneda, 1);
-	                this.creditoCliente = this.creditoCliente.add(valor);
-
-	                System.out.println("\n(+) Ingresado: " + valor + "€");
-	            } else {
-	                System.out.println("\nOpción inválida. Pruebe otra...");
-	            }
-	            System.out.println("Crédito actual: " + this.creditoCliente + "€\n");
-	        }
-	        // System.out.println(depositoMonedas.toString());
-	    } while (!eleccion.equals("S"));
-	    
+                System.out.println("\n(+) Ingresado: " + valor + "€");
+            } else {
+                System.out.println("\nOpción inválida. Pruebe otra...");
+            }
+            System.out.println("Crédito actual: " + this.creditoCliente + "€\n");
+        }
+        System.out.println(depositoMonedas.toString());
 	}
 
 	/**
@@ -199,23 +64,9 @@ public class MaquinaVending {
 	    return mapa;
 	}
 	
-	public void comprarProducto() {
-	    String eleccion;
-	    
-	    do {
-	        System.out.println("");
-	        System.out.println(" ------     MENU DE COMPRA     ------ "
-	                + "\nDime el código del producto que desea comprar.");
-	        System.out.print("Introduzca código: ");
-	        
-	        eleccion = ScannerGlobal.sc.nextLine().toUpperCase().trim();
-	        
-	        if (!stock.containsKey(eleccion)) {
-	            System.out.println("El código es incorrecto, prueba de nuevo...");
-	        }
-	    } while (!stock.containsKey(eleccion));
-	    
-	    Ranuras ranuraSeleccionada = stock.get(eleccion);
+	public void comprarProducto(String eleccion) {
+	   
+	    Ranuras ranuraSeleccionada = sistemaStock.getRanuras().get(eleccion);
 	    Productos productoSeleccionado = ranuraSeleccionada.getProducto();
 	    System.out.println();
 	    
@@ -241,20 +92,20 @@ public class MaquinaVending {
 	                } else {
 	                    System.out.println("ERROR: La máquina no dispone de cambio suficiente.");
 	                    System.out.println("Operación cancelada. Recupere su crédito en el menú principal.");
-	                    pulseEnter();
+	                    ScannerGlobal.pulseEnter();
 	                }
 
 	            } else {
 	                System.out.println("No tienes crédito suficiente (Faltan: " + precio.subtract(creditoCliente) + "€)");
-	                pulseEnter();
+	                ScannerGlobal.pulseEnter();
 	            }
 	        } else {
 	            System.out.println("Lo sentimos, no queda stock de este producto.");
-	            pulseEnter();
+	            ScannerGlobal.pulseEnter();
 	        }
 	    } else {
 	        System.out.println("En esa ranura no hay ningún producto asociado.");
-	        pulseEnter();
+	        ScannerGlobal.pulseEnter();
 	    }
 
 	}
@@ -281,11 +132,11 @@ public class MaquinaVending {
 		        System.out.println("Por favor, llame al servicio técnico. Su crédito de " + creditoCliente + "€ se mantiene.");
 		    }
 	    }
-	    pulseEnter();
+	    ScannerGlobal.pulseEnter();
 	}
 	
-	private void pulseEnter() {
-		System.out.println("\nPulse Enter para volver al menú...");
-	    ScannerGlobal.sc.nextLine();
+	public boolean pinCorrecto (String pin) {
+		return pin.equals(getPinAdmin());
 	}
+	
 }
