@@ -11,7 +11,7 @@ public class MaquinaVending {
 	private Map <String, Ranuras> stock;
 	private Deposito depositoMonedas;
 	private BigDecimal creditoCliente;
-	private final String PIN_ADMIN = "1234";
+	private String pin_admin = "1234";
 	
 	public MaquinaVending() {
 		this.stock = new HashMap<>();
@@ -96,7 +96,7 @@ public class MaquinaVending {
 		}
 		System.out.println("====================================================");
 		System.out.println();
-		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente);
+		System.out.println(" CREDITO ACTUAL: "+ this.creditoCliente + "€");
 			
 	}
 	
@@ -202,8 +202,6 @@ public class MaquinaVending {
 	public void comprarProducto() {
 	    String eleccion;
 	    
-	    
-	    
 	    do {
 	        System.out.println("");
 	        System.out.println(" ------     MENU DE COMPRA     ------ "
@@ -243,16 +241,20 @@ public class MaquinaVending {
 	                } else {
 	                    System.out.println("ERROR: La máquina no dispone de cambio suficiente.");
 	                    System.out.println("Operación cancelada. Recupere su crédito en el menú principal.");
+	                    pulseEnter();
 	                }
 
 	            } else {
 	                System.out.println("No tienes crédito suficiente (Faltan: " + precio.subtract(creditoCliente) + "€)");
+	                pulseEnter();
 	            }
 	        } else {
 	            System.out.println("Lo sentimos, no queda stock de este producto.");
+	            pulseEnter();
 	        }
 	    } else {
 	        System.out.println("En esa ranura no hay ningún producto asociado.");
+	        pulseEnter();
 	    }
 
 	}
@@ -279,7 +281,11 @@ public class MaquinaVending {
 		        System.out.println("Por favor, llame al servicio técnico. Su crédito de " + creditoCliente + "€ se mantiene.");
 		    }
 	    }
-	    System.out.println("\nPulse Enter para volver al menú...");
+	    pulseEnter();
+	}
+	
+	private void pulseEnter() {
+		System.out.println("\nPulse Enter para volver al menú...");
 	    ScannerGlobal.sc.nextLine();
 	}
 }

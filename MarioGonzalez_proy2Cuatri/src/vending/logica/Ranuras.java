@@ -21,7 +21,7 @@ public class Ranuras {
 		return cantidad;
 	}
 	
-	public int getMAX_PRODUCTOS() {
+	private int getMAX_PRODUCTOS() {
 		return MAX_PRODUCTOS;
 	}
 	
@@ -29,6 +29,15 @@ public class Ranuras {
 		this.producto = producto;
 	}
 
+	public void setCantidad(int cantidad) {
+	    if (cantidad >= 0 && cantidad <= MAX_PRODUCTOS) {
+	        this.cantidad = cantidad;
+	    } else {
+	        System.out.println("Error: Cantidad fuera de rango (0-" + MAX_PRODUCTOS + ")");
+	    }
+	}
+	
+	/*
 	public void setCantidad(int cantidad) {
 		if (cantidad > getMAX_PRODUCTOS() && cantidad <= 0) {
 			do {
@@ -40,7 +49,7 @@ public class Ranuras {
 			this.cantidad = cantidad;
 		}
 	}
-	
+	*/
 	public boolean hayStock () {
 		return getCantidad() > 0;
 	}
