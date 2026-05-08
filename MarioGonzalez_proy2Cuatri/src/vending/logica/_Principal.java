@@ -13,10 +13,7 @@ public class _Principal {
 		Cliente cl = new Cliente (mv);
 		Administrador ad = new Administrador (mv);
 		
-		System.out.println("****************************************************"
-				+ "\n\tBIENVENIDO A EXPO-VENDING"
-				+ "\n****************************************************");
-		System.out.println();
+		mv.imprimirBienvenida();
 	
 		while (salir) {
 			salir = cl.clienteLogic(cl, ad);

@@ -12,7 +12,16 @@ public class ScannerGlobal {
 	}
 	
 	public static void pulseEnter() {
-		System.out.println("\nPulse Enter para volver al menú...");
+		String cian = InterfazConsola.CIAN;
+	    String amarillo = InterfazConsola.AMARILLO;
+	    String reset = InterfazConsola.RESET;
+	    
+	    System.out.println("\n");
+	    
+	    System.out.println(cian + " ┌──────────────────────────────────────────────────┐");
+	    System.out.println(" │ " + amarillo + "       PULSE [ENTER] PARA VOLVER AL MENÚ        " + cian + " │");
+	    System.out.println(" └──────────────────────────────────────────────────┘" + reset);
+	    
 	    ScannerGlobal.sc.nextLine();
 	}
 }

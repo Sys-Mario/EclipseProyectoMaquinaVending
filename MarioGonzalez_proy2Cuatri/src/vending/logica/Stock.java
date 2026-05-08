@@ -99,23 +99,39 @@ public class Stock {
 
     // Mostrar el listado completo (Incluyendo vacías)
     public void imprimirStockCompleto() {
-    	System.out.println("******************** PRODUCTOS *********************"
-				+ "\n  CODE\tNOMBRE\t\tPRECIO\tSTOCK");
-		System.out.println("====================================================");
+    	String cian = InterfazConsola.CIAN;
+        String verde = InterfazConsola.VERDE;
+        String amarillo = InterfazConsola.AMARILLO;
+        String reset = InterfazConsola.RESET;
+        String rojo = InterfazConsola.ROJO;
+        System.out.println("\n" + cian + "╔════════════════════════════════════════════════════════╗");
+        System.out.println("║ " + reset + "                 CATÁLOGO DE PRODUCTOS                " + cian + " ║");
+        System.out.println("╠══════╦══════════════════════════╦════════════╦═════════╣");
+        System.out.println("║ CODE ║        PRODUCTO          ║   PRECIO   ║  STOCK  ║");
+        System.out.println("╠══════╬══════════════════════════╬════════════╬═════════╣" + reset);
 		for (char i = 'A'; i <= 'D'; i++) {
 			for (int j = 1; j <= 4; j++) {
 				String codigo = String.valueOf(i) + j;
 				Ranuras ranura = ranuras.get(codigo);
 				if (ranura.getProducto() != null) {
-					System.out.println("  " + codigo
-							+ "\t" + ranura.getProducto().getNombre()
-							+ "\t\t" + ranura.getProducto().getPrecio()
-							+ "\t" + ranura.getCantidad());
+					System.out.printf(cian + "║ " + amarillo + "%-4s " + cian + "║ " + reset + "%-24s " + cian + "║ " + verde + "  %6.2f€  " + cian + "║ " + reset + "   %-2s   " + cian + "║%n",
+	                        codigo,
+	                        ranura.getProducto().getNombre(),
+	                        ranura.getProducto().getPrecio(),
+	                        ranura.getCantidad());
 				} else {
-					System.out.println("  " + codigo + "\t---\t\t---\tVACÍO");
+					System.out.printf(cian + "║ " + amarillo + "%-4s " + cian + "║ " + rojo + "%-24s " + cian + "║ " + rojo + "   %-4s    " + cian + "║ " + rojo + "   %-1s    " + cian + "║%n",
+	                        codigo,
+	                        "(Vacío)",
+	                        "----",
+	                        "X");
 				}
 			}
+			if (i < 'D') {
+	            System.out.println(cian + "╠══════╬══════════════════════════╬════════════╬═════════╣" + reset);
+	        }
 		}
+		System.out.println(cian + "╚══════╩══════════════════════════╩════════════╩═════════╝" + reset);
     }
 
     public Map<String, Ranuras> getRanuras() {

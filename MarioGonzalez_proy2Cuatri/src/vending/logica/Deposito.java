@@ -118,7 +118,40 @@ public class Deposito {
 		int monedasActuales = monedas.getOrDefault(moneda, 0);
 		monedas.put(moneda, monedasActuales + cantidad);
 	}
+	
+	public void imprimirDepositoVisual() {
+	    // Colores ANSI
+	    String RESET = "\u001B[0m";
+	    String ORO = "\u001B[33m";
+	    String PLATA = "\u001B[37m";
+	    String AZUL = "\u001B[34m";
+	    String ROJO = "\u001B[31m";
+	    String VERDE = "\u001B[32m";
 
+	    System.out.println(AZUL + "┌────────────────────────────────────────────────────────────┐" + RESET);
+	    System.out.println(AZUL + "│" + ORO + "                ESTADO DE LA CAJA DE MONEDAS               " + AZUL + " │" + RESET);
+	    System.out.println(AZUL + "├──────────────────────────────┬─────────────────────────────┤" + RESET);
+	    System.out.println(AZUL + "│" + RESET + "      DENOMINACIÓN            " + AZUL + "│" + RESET + "      CANTIDAD / ESTADO      " + AZUL + "│" + RESET);
+	    System.out.println(AZUL + "├──────────────────────────────┼─────────────────────────────┤" + RESET);
+
+
+	    for (Map.Entry<Monedas, Integer> entry : monedas.entrySet()) {
+	        Monedas m = entry.getKey();
+	        int cantidad = entry.getValue();
+	        BigDecimal valor = getValorMoneda(m);
+
+	        String colorCantidad = (cantidad < 5) ? ROJO : VERDE;
+	        String aviso = (cantidad < 5) ? " [¡BAJO!]" : "";
+
+	        System.out.printf(AZUL + "│" + RESET + "  %-26s  " + AZUL + "│" + RESET + "  " + colorCantidad + "     %-3d" + RESET + " unidades %-8s " + AZUL + "│%n" + RESET,
+	                m.name() + " (" + String.format("%.2f", valor) + "€)", 
+	                cantidad, 
+	                aviso);
+	    }
+
+	    System.out.println(AZUL + "└──────────────────────────────┴─────────────────────────────┘" + RESET);
+	}
+	
 	@Override
 	public String toString() {
 		return "Monedas: " + monedas;

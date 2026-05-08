@@ -26,6 +26,34 @@ public class MaquinaVending {
 	public String getPinAdmin() { return pinAdmin; }
 	public void setPinAdmin(String pinAdmin) { this.pinAdmin = pinAdmin; }
 	
+	public void imprimirBienvenida() {
+	    String cian = InterfazConsola.CIAN;
+	    String azul = InterfazConsola.AZUL;
+	    String blanco = InterfazConsola.BLANCO;
+	    String reset = InterfazConsola.RESET;
+	    String amarillo = InterfazConsola.AMARILLO;
+
+	    System.out.println(azul + "  ╔══════════════════════════════════════════════════════╗");
+	    System.out.println("  ║" + cian + "  __  __   ____   __  __  ____   _  _  ____  ____   " + azul + "  ║");
+	    System.out.println("  ║" + cian + " (  )(  ) (  __) (  )(  )(  _ \\ ( \\/ )(  __)(    )  " + azul + "  ║");
+	    System.out.println("  ║" + cian + "  )(__)(   ) _)   )(__)(  ) _ ( )  (  ) _)  ) D (   " + azul + "  ║");
+	    System.out.println("  ║" + cian + " (______) (____) (______) (____/ (_/\\_)(____)(____)  " + azul + " ║");
+	    System.out.println("  ╠══════════════════════════════════════════════════════╣");
+	    System.out.println("  ║                                                      ║");
+	    
+	    // Aquí usamos el método de centrar que creamos antes
+	    String subtitulo = InterfazConsola.centrarTexto("SISTEMA DE VENDING PROFESIONAL", 54);
+	    String version = InterfazConsola.centrarTexto("v2026.05.08 - [SISTEMA ACTIVO]", 54);
+	    
+	    System.out.println("  ║" + blanco + subtitulo + azul + "║");
+	    System.out.println("  ║" + cian + version + azul + "║");
+	    System.out.println("  ║                                                      ║");
+	    System.out.println("  ╚══════════════════════════════════════════════════════╝" + reset);
+	    
+	    System.out.println("\n" + amarillo + "          Iniciando componentes de stock..." + reset);
+	   // try { Thread.sleep(8); } catch (Exception e) {} // Un pequeño retraso para darle realismo
+	}
+	
 	/**
 	 * Permite al usuario insertar monedas actualizando el crédito y el depósito.
 	 */
