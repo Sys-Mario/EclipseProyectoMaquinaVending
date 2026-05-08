@@ -2,12 +2,12 @@ package vending.productos;
 
 import java.math.*;
 
-public class Bebidas extends Productos {
+public class Bebida extends Productos {
 
 	private int mililitros;
 	private boolean azucarada;
 	
-	public Bebidas(String id, String nombre, int mililitros, boolean azucarada) {
+	public Bebida(String id, String nombre, int mililitros, boolean azucarada) {
 		super(id, nombre);
 		setMililitros(mililitros);
 		setAzucarada(azucarada);

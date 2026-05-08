@@ -2,11 +2,11 @@ package vending.productos;
 
 import java.math.*;
 
-public class Snacks extends Productos {
+public class Snack extends Productos {
 
 	private TamanioSnacks tamanio;
 	
-	public Snacks(String id, String nombre, TamanioSnacks tamanio) {
+	public Snack(String id, String nombre, TamanioSnacks tamanio) {
 		super(id, nombre);
 		setTamanio(tamanio);
 		setPrecio(calcularPrecio(new BigDecimal("1.5")));

@@ -47,7 +47,7 @@ public class MaquinaVending {
             }
             System.out.println("Crédito actual: " + this.creditoCliente + "€\n");
         }
-        System.out.println(depositoMonedas.toString());
+        //System.out.println(depositoMonedas.toString());
 	}
 
 	/**

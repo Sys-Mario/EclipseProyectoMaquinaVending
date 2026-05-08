@@ -33,19 +33,10 @@ public class Ranuras {
 	    }
 	}
 	
-	/*
-	public void setCantidad(int cantidad) {
-		if (cantidad > getMAX_PRODUCTOS() && cantidad <= 0) {
-			do {
-				System.out.println("ERROR CON LA CANTIDAD INTRODUCIDA ---> ");
-				System.out.println("Introduzcala de nuevo: ");
-				cantidad = ScannerGlobal.sc.nextInt();
-			} while (cantidad <= getMAX_PRODUCTOS() && cantidad > 0);
-		} else {
-			this.cantidad = cantidad;
-		}
+	public void añadirCantidad (int cantidad) {
+		setCantidad(this.cantidad + cantidad);
 	}
-	*/
+	
 	public boolean hayStock () {
 		return getCantidad() > 0;
 	}
