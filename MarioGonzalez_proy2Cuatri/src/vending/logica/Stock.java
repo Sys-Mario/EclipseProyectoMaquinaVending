@@ -3,9 +3,9 @@ package vending.logica;
 import java.util.HashMap;
 import java.util.Map;
 
-import vending.productos.Bebidas;
+import vending.productos.Bebida;
 import vending.productos.Productos;
-import vending.productos.Snacks;
+import vending.productos.Snack;
 import vending.productos.TamanioSnacks;
 
 public class Stock {
@@ -33,11 +33,11 @@ public class Stock {
             	ranuras.put(i + String.valueOf(j), new Ranuras(null, 0));
             }
         
-		ranuras.put("A1", new Ranuras(new Bebidas("P01", "Coca", 330, true), 5));
-		ranuras.put("A2", new Ranuras(new Bebidas("P02", "Agua", 500, false), 10));
+		ranuras.put("A1", new Ranuras(new Bebida("P01", "Coca", 330, true), 5));
+		ranuras.put("A2", new Ranuras(new Bebida("P02", "Agua", 500, false), 10));
 	    
-		ranuras.put("B1", new Ranuras(new Snacks("P03", "Chips", TamanioSnacks.M), 8));
-		ranuras.put("B2", new Ranuras(new Snacks("P04", "Choco", TamanioSnacks.L), 3));
+		ranuras.put("B1", new Ranuras(new Snack("P03", "Chips", TamanioSnacks.M), 8));
+		ranuras.put("B2", new Ranuras(new Snack("P04", "Choco", TamanioSnacks.L), 3));
     	}
     }
     
@@ -45,32 +45,44 @@ public class Stock {
     public boolean validarFormatoCodigo(String codigo) {
         return codigo != null && codigo.matches("^[A-D][1-4]$");
     }
-
+    public boolean validarFormatoID(String id) {
+        return id != null && id.matches("^P[0-9]{3}$");
+    }
+    
+    public boolean comprobarId (String id) {
+    	boolean comprobar = false;
+    	for (Ranuras r : ranuras.values()) {
+            if (!r.estaVacia() && r.getProducto().getId().equals(id)) {
+            	comprobar = true;
+            }
+        }
+    	return comprobar;
+    }
+    
     // Añadir un producto en una ranura libre (Validando ID único)
     public String añadirProducto(String codigo, Productos nuevoProducto, int cantidad) {
         String frase = null;
     	
     	if (!validarFormatoCodigo(codigo)) {
-    		frase = "Error: Formato de código inválido.";
-    	} else {
-    		// Comprobar si el ID ya existe en otra ranura
-            for (Ranuras r : ranuras.values()) {
-                if (!r.estaVacia() && r.getProducto().getId().equals(nuevoProducto.getId())) {
-                    frase = "Error: El producto con ID " + nuevoProducto.getId() + " ya existe en la máquina.";
-                }
-            }
-
-            Ranuras r = ranuras.get(codigo);
-            if (!r.estaVacia()) {
-            	frase = "Error: La ranura " + codigo + " ya está ocupada.";
-            }
-        	
-            if (frase == null) {
-            	r.setProducto(nuevoProducto);
-                r.setCantidad(cantidad);
-            	frase = "Producto añadido correctamente.";
-            }
+    		frase = "Formato de código inválido.";
     	}
+    	
+		if (frase == null && comprobarId(nuevoProducto.getId())) {
+			frase = "El ID " + nuevoProducto.getId() + " ya existe.";
+		}
+		
+		if (frase == null) {
+			Ranuras r = ranuras.get(codigo);
+	        if (r == null) {
+	        	frase = "El código " + codigo + " no existe.";
+	        } else if (!r.estaVacia()) {
+	        	frase = "La ranura " + codigo + " ya está ocupada.";
+	        } else {
+	        	r.setProducto(nuevoProducto);
+	            r.setCantidad(cantidad);
+	        	frase = "Producto añadido correctamente.";
+	        }
+		}
     	
         return frase;
     }
