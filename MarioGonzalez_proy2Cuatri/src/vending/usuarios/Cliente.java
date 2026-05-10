@@ -1,6 +1,6 @@
 package vending.usuarios;
 
-import vending.logica.InterfazConsola;
+import static vending.logica.InterfazConsola.*;
 import vending.logica.MaquinaVending;
 import vending.logica.ScannerGlobal;
 
@@ -20,41 +20,41 @@ public class Cliente {
 		int elegir = -1;
 		boolean seguirEnLaMaquina = true;
 		
-		String verde = InterfazConsola.VERDE_B;
-	    String cian = InterfazConsola.CIAN;
-	    String reset = InterfazConsola.RESET;
-	    String blanco = InterfazConsola.BLANCO;
-		
 		while (seguirEnLaMaquina) {
 			cl.getMv().getSistemaStock().imprimirStockCompleto();
-			System.out.println("\n" + cian + "┌──────────────────────────────────────────────────┐" + reset);
-	        System.out.printf(cian + "│" + blanco + "         CRÉDITO ACTUAL: " + verde + "%10.2f €" + cian + "             │%n" + reset, 
+			System.out.println("\n" + CIAN + "    ┌──────────────────────────────────────────────────┐");
+	        System.out.printf(CIAN + "    │" + BLANCO + "         CRÉDITO ACTUAL: " + VERDE_B + "%10.2f€" + CIAN + "              │%n", 
 	                          cl.getMv().getCreditoCliente());
-	        System.out.println(cian + "├──────────────────────────────────────────────────┤" + reset);
-	        System.out.println(cian + "│" + reset + "  1. Insertar Monedas                             " + cian + "│" + reset);
-	        System.out.println(cian + "│" + reset + "  2. Seleccionar Producto (Comprar)               " + cian + "│" + reset);
-	        System.out.println(cian + "│" + reset + "  3. Devolver Crédito                             " + cian + "│" + reset);
-	        System.out.println(cian + "│" + blanco + "  4. Modo Administrador (PIN)                     " + cian + "│" + reset);
-	        System.out.println(cian + "│" + InterfazConsola.ROJO + "  0. Salir de la Máquina                          " + cian + "│" + reset);
-	        System.out.println(cian + "└──────────────────────────────────────────────────┘" + reset);
-	        System.out.print(cian + "  Seleccione una opción: " + reset);
+	        System.out.println(CIAN + "    ├──────────────────────────────────────────────────┤");
+	        System.out.println(CIAN + "    │" + RESET + "  1. " + AMARILLO + "Insertar Monedas" + "                             " + CIAN + "│");
+	        System.out.println(CIAN + "    │" + RESET + "  2. " + AMARILLO + "Seleccionar Producto (Comprar)" + "               " + CIAN + "│");
+	        System.out.println(CIAN + "    │" + RESET + "  3. Devolver Crédito                             " + CIAN + "│");
+	        System.out.println(CIAN + "    │" + BLANCO + "  4. Acceso Técnico (PIN)" + "                         " + CIAN + "│");
+	        System.out.println(CIAN + "    │" + ROJO + "  0. Salir de la Máquina" + "                          " + CIAN + "│");
+	        System.out.println(CIAN + "    └──────────────────────────────────────────────────┘" + RESET);
+	        System.out.print(CIAN + "     ➤ Seleccione una opción: " + RESET);
 			if (ScannerGlobal.sc.hasNextInt()) {
 	            elegir = ScannerGlobal.sc.nextInt();
 	            ScannerGlobal.sc.nextLine(); 
 	            
-	            if (elegir == 0) {
-	            	seguirEnLaMaquina = false;
-	            } else if (elegir == 4) {
+	            switch (elegir) {
+                case 0:
+                    seguirEnLaMaquina = false;
+                    System.out.println("\n" + AMARILLO + "  Gracias por usar la máquina de " + RESET + "MARIO" + AMARILLO + ". ¡Hasta pronto!" + RESET);
+                    break;
+                case 4:
                     if (cl.modo()) {
                         ad.adminLogic(ad);
                     }
-                } else if (elegir >= 1 && elegir <= 3) {
+                    break;
+                case 1, 2, 3:
                     cl.eleccionUsuario(elegir);
-                } else {
-                    System.out.println("\nElección errónea\n");
-                }
+                    break;
+                default:
+                    System.out.println("\n" + ROJO + "  [!] Opción no disponible. Inténtelo de nuevo." + RESET);
+            }
 	        } else {
-	            System.out.println("Por favor, introduce un número.");
+	        	System.out.println(ROJO + "  [!] Por favor, introduce un número válido." + RESET);
 	            ScannerGlobal.sc.next();
 	        }
 		}
@@ -62,7 +62,6 @@ public class Cliente {
 	}
 	
 	public void eleccionUsuario (int elegido) {
-		InterfazConsola.limpiarConsola();
 		switch (elegido) {
 			case 1:
 				introducir();
@@ -76,7 +75,6 @@ public class Cliente {
 			default:
 				System.out.println("Eleccion erronea");
 		}
-		ScannerGlobal.pulseEnter();
 	}
 	
 	public void introducir () {
@@ -84,32 +82,48 @@ public class Cliente {
 	    String eleccion = "";
 	    
 	    do {
-	        System.out.println(" ------     MENU DE INSERCIÓN     ------ "
-	        		+ "\n A. 2.00€\tB. 1.00€\tC. 0.50€"
-	        		+ "\n D. 0.20€ \tE. 0.10€\tF. 0.05€"
-	        		+ "\n  -------\tS. Salir\t-------");
-	        System.out.print("Introduzca opción: ");
+	    	System.out.println(CIAN + "    ┌──────────────────────────────────────────────────┐");
+	        System.out.println("    │" + BLANCO + "            SELECTOR DE MONEDAS (CRÉDITO)         " + CIAN + "│");
+	        System.out.println("    ├──────────────────────────────────────────────────┤");
+	        System.out.println("    │       " + AMARILLO + " A. 2.00€ " + CIAN + " │ " + AMARILLO + " B. 1.00€ " + CIAN + " │ " + AMARILLO + " C. 0.50€ " + CIAN + "       │");
+	        System.out.println("    │       " + AMARILLO + " D. 0.20€ " + CIAN + " │ " + AMARILLO + " E. 0.10€ " + CIAN + " │ " + AMARILLO + " F. 0.05€ " + CIAN + "       │");
+	        System.out.println("    ├──────────────────────────────────────────────────┤");
+	        System.out.println("    │" + ROJO + "              S. FINALIZAR INSERCIÓN              " + CIAN + "│");
+	        System.out.println("    └──────────────────────────────────────────────────┘" + RESET);
+	        
+	        System.out.print(CIAN + "     ➤ Inserte moneda (Letra): " + RESET);
 	        
 	        eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
 	        
 	        mv.introducirMoneda(eleccion);
 	    } while (!eleccion.equals("S"));
+	    System.out.println(VERDE + "     [✔] Inserción finalizada correctamente." + RESET);
 	}
 	
 	public void comprar () {
 		 String eleccion;
+		 boolean codigoValido = false;
+		 
 		do {
-	        System.out.println("");
-	        System.out.println(" ------     MENU DE COMPRA     ------ "
-	                + "\nDime el código del producto que desea comprar.");
-	        System.out.print("Introduzca código: ");
+			System.out.println("\n" + CIAN + "     ┌──────────────────────────────────────────────────┐");
+	        System.out.println("     │" + BLANCO + "                MENÚ DE SELECCIÓN                 " + CIAN + "│");
+	        System.out.println("     └──────────────────────────────────────────────────┘" + RESET);
+	        System.out.println("      Escriba el " + AMARILLO + "CÓDIGO" + RESET + " del producto (ej: A1, B2...)");
+	        System.out.print(CIAN + "      ➤ SELECCIÓN: " + RESET);
 	        
 	        eleccion = ScannerGlobal.sc.nextLine().toUpperCase().trim();
 	        
 	        if (!mv.getSistemaStock().getRanuras().containsKey(eleccion)) {
-	            System.out.println("El código es incorrecto, prueba de nuevo...");
+	        	System.out.println("\n" + ROJO + "      [!] ERROR: El código [" + eleccion + "] no existe." + RESET);
+	            System.out.println("      Por favor, consulte el catálogo de productos.");
+	            System.out.println(CIAN + "     ──────────────────────────────────────────────────" + RESET);
+	        } else {
+	        	codigoValido = true;
 	        }
-	    } while (!mv.getSistemaStock().getRanuras().containsKey(eleccion));
+	    } while (!codigoValido);
+		
+		System.out.println("\n" + VERDE + "      [OK] Código aceptado. Procesando selección..." + RESET);
+	    try { Thread.sleep(500); } catch (Exception e) {}
 		
 		mv.comprarProducto(eleccion);
 	}
@@ -119,39 +133,41 @@ public class Cliente {
 		int intentosFallidos = 3;
 		boolean correcto = false;
 		
-		String verde = InterfazConsola.VERDE_B;
-	    String rojo = InterfazConsola.ROJO_B;
-	    String reset = InterfazConsola.RESET;
 	    String fondoNegro = "\u001B[40m";
 		
-	    System.out.println("\n" + fondoNegro + verde + " ╔═════════════════════════════════════════════════╗ ");
-	    System.out.println(" ║        [!] ALERTA: ACCESO RESTRINGIDO           ║ ");
-	    System.out.println(" ║       SISTEMA OPERATIVO KALI-VENDING v2.0       ║ ");
-	    System.out.println(" ╚═════════════════════════════════════════════════╝ " + reset);
+	    System.out.println("\n" + fondoNegro + VERDE_B + "      ╔═════════════════════════════════════════════════╗      ");
+	    System.out.println("      ║        " + AMARILLO + "[!] ALERTA: ACCESO RESTRINGIDO" + VERDE_B + "           ║      ");
+	    System.out.println("      ║       SISTEMA OPERATIVO KALI-VENDING v2.0       ║      ");
+	    System.out.println("      ╚═════════════════════════════════════════════════╝      " + RESET);
 		
 		while (intentosFallidos > 0 && !correcto) {
-			System.out.print( verde + " \nID_ROOT@MACHINE:~$ " + reset + "ENTER_PIN (" + intentosFallidos + " left): ");
+			System.out.print(VERDE + "      ID_ROOT@MARIO_MACHINE:~$ " + RESET + "ENTER_PIN (" + intentosFallidos + " left): ");
 	        intentoPin = ScannerGlobal.sc.next();
 
 	        if (mv.pinCorrecto(intentoPin)) {
-	        	System.out.println(" \n" + verde + "[OK] HASH_MATCH: " + reset + "Verificando integridad...");
-	            System.out.print(verde + " CARGANDO: [####################] 100%" + reset);
-	            System.out.println(" \n" + verde + ">>> ACCESO CONCEDIDO. BIENVENIDO, ADMIN." + reset);
+	        	System.out.println("\n" + VERDE + "      [OK] HASH_MATCH: " + RESET + "Verificando integridad...");
+	        	System.out.print(VERDE + "      CARGANDO: [" + RESET);
+	            for(int i=0; i<20; i++) {
+	                try { Thread.sleep(50); System.out.print("#"); } catch (Exception e) {}
+	            }
+	            System.out.println(VERDE + "] 100%" + RESET);
+	            
+	            System.out.println("\n" + VERDE_B + "      >>> ACCESO CONCEDIDO. BIENVENIDO, ADMIN." + RESET);
 	            correcto = true;
 	        } else {
 	            intentosFallidos--;
-	            if (intentosFallidos < 1) {
-	            	System.out.println(rojo + " [ERR] INVALID_TOKEN. La intrusión ha sido reportada." + reset);
-	            } else if (intentosFallidos > 0) {
-	            	System.out.println(rojo + " [ERR] INVALID_TOKEN." + reset);
+	            if (intentosFallidos >= 1) {
+	                System.out.println(ROJO_B + "      [ERR] INVALID_TOKEN. Intento fallido." + RESET);
+	            } else {
+	                System.out.println(ROJO_B + "      [ERR] FATAL_ERROR: La intrusión ha sido reportada a MARIO_SECURITY." + RESET);
 	            }
 	        }
 	    }
 		
 		if (!correcto) {
-			System.out.println("\n" + rojo + "╔══════════════════════════════════════════════════╗");
-	        System.out.println("║ [!!!] SISTEMA BLOQUEADO - CONTACTE CON SOPORTE   ║");
-	        System.out.println("╚══════════════════════════════════════════════════╝" + reset);
+			System.out.println("\n" + ROJO_B + fondoNegro + "      ╔══════════════════════════════════════════════════╗ ");
+	        System.out.println("      ║ [!!!] SISTEMA BLOQUEADO - CONTACTE CON SOPORTE   ║ ");
+	        System.out.println("      ╚══════════════════════════════════════════════════╝ " + RESET);
 	    }
 		ScannerGlobal.sc.nextLine();
 		ScannerGlobal.pulseEnter();

@@ -1,6 +1,6 @@
 package vending.usuarios;
 
-import vending.logica.InterfazConsola;
+import static vending.logica.InterfazConsola.*;
 import vending.logica.MaquinaVending;
 import vending.logica.Ranuras;
 import vending.logica.ScannerGlobal;
@@ -24,10 +24,9 @@ private MaquinaVending mv;
 	public void adminLogic(Administrador ad) {
         int elegir = -1;
         
-        String rojoB = InterfazConsola.ROJO_B;
-        String cian = InterfazConsola.CIAN;
-        String reset = InterfazConsola.RESET;
-        String amarillo = InterfazConsola.AMARILLO;
+        String rojoB = ROJO_B;
+        String cian = CIAN;
+        String reset = RESET;
         
         System.out.println("\n" + cian + "╔══════════════════════════════════════════════════╗" + reset);
         System.out.println(cian + "║ " + rojoB + "             PANEL DE ADMINISTRACIÓN            " + cian + " ║" + reset);
@@ -54,7 +53,7 @@ private MaquinaVending mv;
                 	ad.eleccionAdmin(elegir);
                 }                
             } else {
-            	System.out.println("\n" + InterfazConsola.ROJO + "  [!] Error: Por favor, introduce un número." + reset);
+            	System.out.println("\n" + ROJO + "  [!] Error: Por favor, introduce un número." + reset);
                 ScannerGlobal.sc.next();
             }
         }
@@ -122,79 +121,65 @@ private MaquinaVending mv;
 	}
 	
 	public void productoNuevo () {
-		int eleccionTipo = 0;
-		boolean entradaValida = false, codeValido = false;
 		
+		System.out.println("\n" + CIAN + "┌──────────────────────────────────────────────────┐");
+	    System.out.println("│" + AMARILLO_B + "          REGISTRO DE NUEVO PRODUCTO              " + CIAN + "│");
+	    System.out.println("└──────────────────────────────────────────────────┘" + RESET);
+	    
 		String code = pedirCodigo ();
 		
-		ScannerGlobal.sc.nextLine();
-		if (mv.getSistemaStock().getRanuras().containsKey(code) ) {
-			
-		}
-		do {
-			System.out.println("Que tipo de producto será? "
-					+ "\n 1. Snacks"
-					+ "\n 2. Bebidas");
-			if (ScannerGlobal.sc.hasNextInt()) {
-				eleccionTipo = ScannerGlobal.sc.nextInt();
-	            
-	            if (eleccionTipo == 1 || eleccionTipo == 2) {
-	                entradaValida = true; 
-	            } else {
-	                System.out.println("Por favor, selecciona 1 o 2.");
-	            }
-			} else {
-				System.out.println("Esto no es el valor númerico requerido...");
-				ScannerGlobal.sc.next();
-			}
-		} while (!entradaValida);
+		int tipo = 0;
+	    while (tipo < 1 || tipo > 2) {
+	        System.out.print("\n" + CIAN + "Tipo:" + RESET + " [1] Snack  [2] Bebida: ");
+	        if (ScannerGlobal.sc.hasNextInt()) {
+	            tipo = ScannerGlobal.sc.nextInt();
+	        } else {
+	            ScannerGlobal.sc.next();
+	        }
+	    }
 		
-		
-		Productos pr = null;
 		String id = "";
 		boolean idValido = false;
 		
 		do {
-		    System.out.print("Dime el Id del producto (Formato P000, ej: P001): ");
+			System.out.print(AMARILLO + "Dime el ID (Ej: P001): " + RESET);
 		    id = ScannerGlobal.sc.next().trim().toUpperCase();
 
 		    if (!mv.getSistemaStock().validarFormatoID(id)) {
-		        System.out.println("El formato debe ser una 'P' seguida de 3 números (ej: P005).");
+		        System.out.println(ROJO + " [!] El formato debe ser una 'P' seguida de 3 números (ej: P005)." + RESET);
 		    } else if (mv.getSistemaStock().comprobarId(id)) { 
-		        System.out.println("El ID " + id + " ya está registrado en otra ranura.");
+		    	System.out.println(ROJO + " [!] El ID ya esta registrado." + RESET);
 		    } else {
 		        idValido = true;
 		    }
 		} while (!idValido);
 		
-		System.out.println("Nombre del Producto: ");
-		String nombre = ScannerGlobal.sc.next();
+		System.out.print(AMARILLO + "Nombre del Producto: " + RESET);
+	    ScannerGlobal.sc.nextLine(); 
+	    String nombre = ScannerGlobal.sc.nextLine();
 		
-		switch (eleccionTipo) {
+	    Productos pr = null;
+	    
+		switch (tipo) {
 		case 1:
 			TamanioSnacks tamanio = null;
 			while (tamanio == null) {
-			    System.out.print("Introduce el tamaño del Snack (S, M, L): ");
-			    String entradaTamanio = ScannerGlobal.sc.next().trim().toUpperCase();
-
+				System.out.print(CIAN + "Introduce el tamaño (S, M, L): " + RESET);
 			    try {
-			        tamanio = TamanioSnacks.valueOf(entradaTamanio);
+			        tamanio = TamanioSnacks.valueOf(ScannerGlobal.sc.next().trim().toUpperCase());
 			    } catch (IllegalArgumentException e) {
-			        System.out.println("Tamaño no válido. Por favor, usa S, M o L.");
+			    	System.out.println(ROJO + " [!] Use S, M o L." + RESET);
 			    }
 			}
 			pr = new Snack(id, nombre, tamanio);
 			break;
 		case 2:
-			int mililitros = 0;
-			do {
-				System.out.println("Introduce los mililitros de la Bebida: ");
-				if (ScannerGlobal.sc.hasNextInt()) {
-					mililitros = ScannerGlobal.sc.nextInt();
-				}
-			} while (mililitros == 0);
+			
+			System.out.print(CIAN + "Mililitros: " + RESET);
+	        int mililitros = ScannerGlobal.sc.hasNextInt() ? ScannerGlobal.sc.nextInt() : 330;
 			
 			ScannerGlobal.sc.nextLine();
+			
 			boolean azucarada = pedirSiNo("Es azucarada?");
 			pr = new Bebida(id, nombre, mililitros, azucarada);
 			
@@ -204,22 +189,38 @@ private MaquinaVending mv;
 		}
 		
 		if (pr != null) {
-			System.out.println("Cantidad del producto deseado: ");
-			int cantidad = ScannerGlobal.sc.nextInt();
+			System.out.print(AMARILLO + "Cantidad inicial: " + RESET);
+			int cantidad = ScannerGlobal.sc.hasNextInt() ? ScannerGlobal.sc.nextInt() : 0;
 			
 			String fraseResultado = mv.getSistemaStock().añadirProducto(code, pr, cantidad);
-			System.out.println(fraseResultado);
+			System.out.println("\n" + VERDE_B + ">>> " + fraseResultado + RESET);
 		}
 		
 	}
 	
 	public void eliminarProducto () {
+		
+		System.out.println("\n" + ROJO + "╔══════════════════════════════════════════════════╗");
+	    System.out.println("║              ELIMINAR PRODUCTO                   ║");
+	    System.out.println("╚══════════════════════════════════════════════════╝" + RESET);
+		
 		String code = pedirCodigo ();
-		if (mv.getSistemaStock().eliminarProducto(code)) {
-			System.out.println("El producto fue eliminado del codigo "+ code + ". ");
-		} else {
-			System.out.println("El producto no pudo ser eliminado. ");
-		}
+		
+		System.out.println("\n" + AMARILLO + " ¿Está seguro de que desea eliminar el producto en " + code + "? " + RESET);
+	    if (pedirSiNo("")) {
+	        
+	        System.out.print(ROJO + " Eliminando datos de la ranura " + code + "..." + RESET);
+	        
+	        try { Thread.sleep(600); } catch (Exception e) {}
+
+	        if (mv.getSistemaStock().eliminarProducto(code)) {
+	            System.out.println("\n" + VERDE_B + " [✔] El producto fue eliminado correctamente." + RESET);
+	        } else {
+	            System.out.println("\n" + ROJO + " [!] La ranura ya estaba vacía o no se pudo acceder." + RESET);
+	        }
+	    } else {
+	        System.out.println("\n" + CIAN + " [i] Operación cancelada por el administrador." + RESET);
+	    }
 	}
 	
 	public boolean pedirSiNo(String mensaje) {
@@ -227,7 +228,7 @@ private MaquinaVending mv;
 	    boolean entradaValida = false;
 	    
 	    do {
-	        System.out.print(mensaje + " (S/N): ");
+	    	System.out.print(AMARILLO + mensaje + CIAN + " (S/N): " + RESET);
 	        String entrada = ScannerGlobal.sc.next().trim().toUpperCase();
 	        
 	        if (entrada.equals("S")) {
@@ -237,7 +238,7 @@ private MaquinaVending mv;
 	            resultado = false;
 	            entradaValida = true;
 	        } else {
-	            System.out.println("Error: Por favor, introduce 'S' para sí o 'N' para no.");
+	        	System.out.println("\n" + ROJO + " [!] Por favor, introduce 'S' para sí o 'N' para no." + RESET);
 	        }
 	    } while (!entradaValida);
 	    
@@ -248,22 +249,26 @@ private MaquinaVending mv;
 		String code = "";
 		boolean codeValido = false;
 		do {
-			System.out.print("Dime el código: ");
+			System.out.print(AMARILLO + "➤ Introduzca el código de ranura (ej. A1): " + RESET);
 			code = ScannerGlobal.sc.next().trim().toUpperCase();
 
 			if (!mv.getSistemaStock().validarFormatoCodigo(code)) {
-	            System.out.println("Codigo invalido, pruebe otro.");
+				System.out.println(ROJO + " [!] Formato de código inválido. Use Letra + Número." + RESET);
 	        } else {
 				Ranuras r = mv.getSistemaStock().getRanuras().get(code);
 				
 				if (r == null) {
-				    System.out.println("El código " + code + " no existe en la máquina.");
+					System.out.println(ROJO + " [!] El código " + code + " no existe en el sistema." + RESET);
 				} else if (!r.estaVacia()) {
-				    System.out.println("La ranura " + code + " ya tiene el producto: " + r.getProducto().getNombre());
+					System.out.println(ROJO + " [!] La ranura " + code + " ya está ocupada por: " + CIAN + r.getProducto().getNombre() + RESET);
 				} else {
 				    codeValido = true;
 				}
 	        }
+			if (!codeValido) {
+				System.out.println(CIAN + "────────────────────────────────────────────────────" + RESET);
+			}
+			
 		} while (!codeValido);
 		return code;
 	}

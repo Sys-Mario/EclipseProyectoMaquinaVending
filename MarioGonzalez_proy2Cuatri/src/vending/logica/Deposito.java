@@ -2,8 +2,8 @@ package vending.logica;
 
 import java.math.BigDecimal;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
+import static vending.logica.InterfazConsola.*;
 
 public class Deposito {
 
@@ -120,19 +120,12 @@ public class Deposito {
 	}
 	
 	public void imprimirDepositoVisual() {
-	    // Colores ANSI
-	    String RESET = "\u001B[0m";
-	    String ORO = "\u001B[33m";
-	    String PLATA = "\u001B[37m";
-	    String AZUL = "\u001B[34m";
-	    String ROJO = "\u001B[31m";
-	    String VERDE = "\u001B[32m";
 
-	    System.out.println(AZUL + "┌────────────────────────────────────────────────────────────┐" + RESET);
-	    System.out.println(AZUL + "│" + ORO + "                ESTADO DE LA CAJA DE MONEDAS               " + AZUL + " │" + RESET);
-	    System.out.println(AZUL + "├──────────────────────────────┬─────────────────────────────┤" + RESET);
-	    System.out.println(AZUL + "│" + RESET + "      DENOMINACIÓN            " + AZUL + "│" + RESET + "      CANTIDAD / ESTADO      " + AZUL + "│" + RESET);
-	    System.out.println(AZUL + "├──────────────────────────────┼─────────────────────────────┤" + RESET);
+		System.out.println("\n" + AZUL + " ┌────────────────────────────────────────────────────────────┐");
+	    System.out.println(" │" + AMARILLO_B + "                ESTADO DE LA CAJA DE MONEDAS               " + AZUL + " │");
+	    System.out.println(" ├──────────────────────────────┬─────────────────────────────┤");
+	    System.out.println(" │" + BLANCO + "      DENOMINACIÓN            " + AZUL + "│" + BLANCO + "      CANTIDAD / ESTADO      " + AZUL + "│");
+	    System.out.println(" ├──────────────────────────────┼─────────────────────────────┤" + RESET);
 
 
 	    for (Map.Entry<Monedas, Integer> entry : monedas.entrySet()) {
@@ -140,16 +133,29 @@ public class Deposito {
 	        int cantidad = entry.getValue();
 	        BigDecimal valor = getValorMoneda(m);
 
-	        String colorCantidad = (cantidad < 5) ? ROJO : VERDE;
-	        String aviso = (cantidad < 5) ? " [¡BAJO!]" : "";
+	        String colorCant = (cantidad < 5) ? ROJO : (cantidad < 10) ? AMARILLO : VERDE;
+	        String aviso     = (cantidad < 5) ? " [¡BAJO!]" : (cantidad == 0) ? " [VACÍO]" : " [OK]";
 
-	        System.out.printf(AZUL + "│" + RESET + "  %-26s  " + AZUL + "│" + RESET + "  " + colorCantidad + "     %-3d" + RESET + " unidades %-8s " + AZUL + "│%n" + RESET,
-	                m.name() + " (" + String.format("%.2f", valor) + "€)", 
+	        String barra = "■".repeat(Math.min(cantidad, 5));
+	        if (cantidad < 5) barra = ROJO + barra + RESET;
+	        else barra = VERDE + barra + RESET;
+	        
+	        String denominacion = m.name() + " (" + String.format("%.2f", valor) + "€)";
+	        
+	        System.out.printf(AZUL + " │ " + RESET + "%-28s " + AZUL + "│      " + colorCant + "%-4d " + RESET + "%-10s %-10s" + AZUL + "       │%n",
+	                denominacion, 
 	                cantidad, 
-	                aviso);
+	                barra,
+	                colorCant + aviso + RESET);
 	    }
 
-	    System.out.println(AZUL + "└──────────────────────────────┴─────────────────────────────┘" + RESET);
+	    System.out.println(AZUL + " └──────────────────────────────┴─────────────────────────────┘" + RESET);
+	
+	    BigDecimal totalCaja = monedas.entrySet().stream()
+	            .map(e -> getValorMoneda(e.getKey()).multiply(new BigDecimal(e.getValue())))
+	            .reduce(BigDecimal.ZERO, BigDecimal::add);
+	            
+	    System.out.println(CIAN + "  TOTAL EFECTIVO EN CAJA: " + VERDE_B + String.format("%.2f", totalCaja) + "€" + RESET + "\n");
 	}
 	
 	@Override

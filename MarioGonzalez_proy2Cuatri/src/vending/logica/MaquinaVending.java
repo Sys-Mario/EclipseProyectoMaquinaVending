@@ -3,6 +3,7 @@ package vending.logica;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import static vending.logica.InterfazConsola.*;
 
 import vending.productos.*;
 
@@ -27,31 +28,30 @@ public class MaquinaVending {
 	public void setPinAdmin(String pinAdmin) { this.pinAdmin = pinAdmin; }
 	
 	public void imprimirBienvenida() {
-	    String cian = InterfazConsola.CIAN;
-	    String azul = InterfazConsola.AZUL;
-	    String blanco = InterfazConsola.BLANCO;
-	    String reset = InterfazConsola.RESET;
-	    String amarillo = InterfazConsola.AMARILLO;
+		System.out.println(AZUL + "  ╔════════════════════════════════════════════════════════╗");
 
-	    System.out.println(azul + "  ╔══════════════════════════════════════════════════════╗");
-	    System.out.println("  ║" + cian + "  __  __   ____   __  __  ____   _  _  ____  ____   " + azul + "  ║");
-	    System.out.println("  ║" + cian + " (  )(  ) (  __) (  )(  )(  _ \\ ( \\/ )(  __)(    )  " + azul + "  ║");
-	    System.out.println("  ║" + cian + "  )(__)(   ) _)   )(__)(  ) _ ( )  (  ) _)  ) D (   " + azul + "  ║");
-	    System.out.println("  ║" + cian + " (______) (____) (______) (____/ (_/\\_)(____)(____)  " + azul + " ║");
-	    System.out.println("  ╠══════════════════════════════════════════════════════╣");
-	    System.out.println("  ║                                                      ║");
+		System.out.println("  ║    " + CIAN + "   __  __      _      ____       _  U  ___  u       " + AZUL + "║");
+		System.out.println("  ║    " + CIAN + " U|' \\/ '|uU  / _\\  U |  _ \\ u  | |  \\/'_ \\/        " + AZUL + "║");
+		System.out.println("  ║    " + CIAN + " \\| |\\/| |/ \\/ _ \\/  \\| |_) |/  | |  | | | |        " + AZUL + "║");
+		System.out.println("  ║    " + CIAN + "  | |  | |  / ___ \\   |  _ <    | |  | |_| |        " + AZUL + "║");
+		System.out.println("  ║    " + CIAN + "  |_|  |_| /_/   \\_\\  |_| \\_\\  u|_| u \\___/         " + AZUL + "║");
+		System.out.println("  ║    " + CIAN + "  <<,  >>,, \\\\    >>  //   \\\\_  _//,-.  \\\\          " + AZUL + "║");
+
+		System.out.println("  ╠════════════════════════════════════════════════════════╣");
+
+	    int anchoCaja = 56;
+	    String subtitulo = centrarTexto("SISTEMA DE VENDING PROFESIONAL", anchoCaja);
+	    String version   = centrarTexto("v2026.05.10 - [SISTEMA ACTIVO]", anchoCaja);
 	    
-	    // Aquí usamos el método de centrar que creamos antes
-	    String subtitulo = InterfazConsola.centrarTexto("SISTEMA DE VENDING PROFESIONAL", 54);
-	    String version = InterfazConsola.centrarTexto("v2026.05.08 - [SISTEMA ACTIVO]", 54);
-	    
-	    System.out.println("  ║" + blanco + subtitulo + azul + "║");
-	    System.out.println("  ║" + cian + version + azul + "║");
-	    System.out.println("  ║                                                      ║");
-	    System.out.println("  ╚══════════════════════════════════════════════════════╝" + reset);
-	    
-	    System.out.println("\n" + amarillo + "          Iniciando componentes de stock..." + reset);
-	   // try { Thread.sleep(8); } catch (Exception e) {} // Un pequeño retraso para darle realismo
+	    System.out.println("  ║" + BLANCO + subtitulo + AZUL + "║");
+	    System.out.println("  ║" + CIAN   + version   + AZUL + "║");
+	    System.out.println("  ╚════════════════════════════════════════════════════════╝" + RESET);
+
+	    System.out.print("\n" + AMARILLO + "  >> Iniciando sistemas" + RESET);
+	    for(int i = 0; i < 3; i++) {
+	        try { Thread.sleep(300); System.out.print(AMARILLO + "." + RESET); } catch (Exception e) {}
+	    }
+	    System.out.println(VERDE + " [READY]" + RESET);
 	}
 	
 	/**
@@ -69,11 +69,13 @@ public class MaquinaVending {
                 depositoMonedas.añadirMonedas(moneda, 1);
                 this.creditoCliente = this.creditoCliente.add(valor);
 
-                System.out.println("\n(+) Ingresado: " + valor + "€");
+                System.out.println("\n" + VERDE + "    [+] Moneda de " + valor + "€ aceptada." + RESET);
             } else {
-                System.out.println("\nOpción inválida. Pruebe otra...");
+            	System.out.println("\n" + ROJO + "    [!] Opción inválida. La moneda ha sido rechazada." + RESET);
             }
-            System.out.println("Crédito actual: " + this.creditoCliente + "€\n");
+            System.out.println(CIAN + "    ┌────────────────────────────┐");
+            System.out.printf(CIAN + "    │  Crédito total: " + AMARILLO_B + "%7s€" + CIAN + "   │%n", this.creditoCliente);
+            System.out.println(CIAN + "    └────────────────────────────┘" + RESET + "\n");
         }
         //System.out.println(depositoMonedas.toString());
 	}
@@ -95,69 +97,90 @@ public class MaquinaVending {
 	public void comprarProducto(String eleccion) {
 	   
 	    Ranuras ranuraSeleccionada = sistemaStock.getRanuras().get(eleccion);
-	    Productos productoSeleccionado = ranuraSeleccionada.getProducto();
-	    System.out.println();
 	    
-	    if (productoSeleccionado != null) {
-	        System.out.println("Procesando la compra de " + productoSeleccionado.getNombre() + "...");
-	        
-	        if (ranuraSeleccionada.hayStock()) {
-	            BigDecimal precio = productoSeleccionado.getPrecio();
+	    if (ranuraSeleccionada != null) {
+	    	Productos productoSeleccionado = ranuraSeleccionada.getProducto();
+		    System.out.println();
+	    	if (productoSeleccionado != null) {
+		        System.out.println(CIAN + "      Procesando la compra de: " + AMARILLO + productoSeleccionado.getNombre() + CIAN + "..." + RESET);
+		        
+		        if (ranuraSeleccionada.hayStock()) {
+		            BigDecimal precio = productoSeleccionado.getPrecio();
 
-	            if (creditoCliente.compareTo(precio) >= 0) {
+		            if (creditoCliente.compareTo(precio) >= 0) {
+		                BigDecimal cambioADevolver = creditoCliente.subtract(precio);
 
-	                BigDecimal cambioADevolver = creditoCliente.subtract(precio);
+		                if (depositoMonedas.tieneCambioSuficiente(cambioADevolver)) {
+		                    
+		                	System.out.print(VERDE + "      Dispensando... [");
+		                    for(int i=0; i<15; i++) {
+		                        try { Thread.sleep(100); System.out.print("■"); } catch (Exception e) {}
+		                    }
+		                    System.out.println("] ¡CLACK!" + RESET);
+		                	
+		                	System.out.println("\n" + VERDE_B + "      ★ COMPRA FINALIZADA CON ÉXITO ★" + RESET);
+		                    
+		                    creditoCliente = creditoCliente.subtract(precio);
+		                    ranuraSeleccionada.reducirStock();
+		                    
+		                    devolverCambio(); 
 
-	                if (depositoMonedas.tieneCambioSuficiente(cambioADevolver)) {
-	                    
-	                    System.out.println("La compra ha sido un éxito.");
-	                    
-	                    creditoCliente = creditoCliente.subtract(precio);
-	                    ranuraSeleccionada.reducirStock();
-	                    
-	                    devolverCambio(); 
+		                } else {
+		                	System.out.println(ROJO + "      [!] ERROR TÉCNICO: La máquina no dispone de cambio suficiente." + RESET);
+		                    System.out.println(AMARILLO + "      Por seguridad, la operación ha sido cancelada." + RESET);
+		                    System.out.println("      Recupere su crédito en el menú principal.");
+		                    ScannerGlobal.pulseEnter();
+		                }
 
-	                } else {
-	                    System.out.println("ERROR: La máquina no dispone de cambio suficiente.");
-	                    System.out.println("Operación cancelada. Recupere su crédito en el menú principal.");
-	                    ScannerGlobal.pulseEnter();
-	                }
-
-	            } else {
-	                System.out.println("No tienes crédito suficiente (Faltan: " + precio.subtract(creditoCliente) + "€)");
-	                ScannerGlobal.pulseEnter();
-	            }
-	        } else {
-	            System.out.println("Lo sentimos, no queda stock de este producto.");
-	            ScannerGlobal.pulseEnter();
-	        }
+		            } else {
+		                System.out.println(ROJO + "      [!] CRÉDITO INSUFICIENTE" + RESET);
+		                System.out.println(" Faltan: " + AMARILLO + precio.subtract(creditoCliente) + "€" + RESET);
+		                ScannerGlobal.pulseEnter();
+		            }
+		        } else {
+		        	System.out.println(ROJO + "      [X] STOCK AGOTADO: Lo sentimos, no quedan unidades." + RESET);
+		            ScannerGlobal.pulseEnter();
+		        }
+		    } else {
+		    	System.out.println(ROJO + "      [!] RANURA VACÍA: No hay producto en la selección " + eleccion + RESET);
+		        ScannerGlobal.pulseEnter();
+		    }
 	    } else {
-	        System.out.println("En esa ranura no hay ningún producto asociado.");
+	    	System.out.println(ROJO + "      [!] ERROR: El código " + eleccion + " no existe." + RESET);
 	        ScannerGlobal.pulseEnter();
 	    }
-
+	    
 	}
 	
 	public void devolverCambio() {
 		System.out.println();
 		 
 	    if (creditoCliente.compareTo(BigDecimal.ZERO) <= 0) {
-	        System.out.println("No hay crédito que devolver.");
+	    	System.out.println(CIAN + " [i] No hay crédito acumulado para devolver." + RESET);
 	    } else {
 	    	Map<Monedas, Integer> monedasEntregadas = depositoMonedas.calcularCambioNecesario(creditoCliente);
 
 		    if (monedasEntregadas != null) {
-		        System.out.println("--- DEVOLVIENDO CRÉDITO ---");
+		    	System.out.println(VERDE + "     ┌──────────────────────────────────────────┐");
+	            System.out.println("     │            " + BLANCO + "DEVOLVIENDO CRÉDITO" + VERDE + "           │");
+	            System.out.println("     ├──────────────────────────────────────────┤" + RESET);
 		        for (Map.Entry<Monedas, Integer> entrada : monedasEntregadas.entrySet()) {
 		            Monedas m = entrada.getKey();
 		            int cant = entrada.getValue();
 		            
-		            System.out.println("  " + cant + " moneda(s) de " + depositoMonedas.getValorMoneda(m) + "€");
+		            System.out.printf(VERDE + "     │ " + RESET + "        %-3d moneda(s) de %-5s€" + VERDE + "          │%n", 
+                            cant, depositoMonedas.getValorMoneda(m));
 		        }
+		        System.out.println(VERDE + "     └──────────────────────────────────────────┘" + RESET);
+	            System.out.println(AMARILLO + "           [¡Recoja su cambio de la bandeja!]" + RESET);
+		        
 		        creditoCliente = BigDecimal.ZERO;
 		    } else {
-		        System.out.println("ERROR CRÍTICO: La máquina no tiene cambio suficiente.");
-		        System.out.println("Por favor, llame al servicio técnico. Su crédito de " + creditoCliente + "€ se mantiene.");
+		    	System.out.println(ROJO_B + "      ╔══════════════════════════════════════════════╗");
+	            System.out.println("      ║   ERROR: SIN CAMBIO EN EL DEPÓSITO           ║");
+	            System.out.println("      ╚══════════════════════════════════════════════╝" + RESET);
+	            System.out.println(AMARILLO + "      Su crédito de " + creditoCliente + "€ se mantiene en la máquina.");
+	            System.out.println("      Contacte con el servicio técnico." + RESET);
 		    }
 	    }
 	    ScannerGlobal.pulseEnter();

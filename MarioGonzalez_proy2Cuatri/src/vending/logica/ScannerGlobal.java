@@ -18,9 +18,9 @@ public class ScannerGlobal {
 	    
 	    System.out.println("\n");
 	    
-	    System.out.println(cian + " ┌──────────────────────────────────────────────────┐");
-	    System.out.println(" │ " + amarillo + "       PULSE [ENTER] PARA VOLVER AL MENÚ        " + cian + " │");
-	    System.out.println(" └──────────────────────────────────────────────────┘" + reset);
+	    System.out.println(cian + "      ┌──────────────────────────────────────────────────┐");
+	    System.out.println("      │ " + amarillo + "       PULSE [ENTER] PARA VOLVER AL MENÚ        " + cian + " │");
+	    System.out.println("      └──────────────────────────────────────────────────┘" + reset);
 	    
 	    ScannerGlobal.sc.nextLine();
 	}

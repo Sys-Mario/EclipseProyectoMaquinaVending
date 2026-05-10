@@ -24,7 +24,7 @@ public class Bebida extends Productos {
 
 	public void setMililitros(int mililitros) {
 		if (mililitros <= 0) {
-			mililitros = 100;
+			mililitros = 330;
 		}
 		this.mililitros = mililitros;
 	}
