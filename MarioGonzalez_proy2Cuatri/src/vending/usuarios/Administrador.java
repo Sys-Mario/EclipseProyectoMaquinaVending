@@ -24,26 +24,22 @@ private MaquinaVending mv;
 	public void adminLogic(Administrador ad) {
         int elegir = -1;
         
-        String rojoB = ROJO_B;
-        String cian = CIAN;
-        String reset = RESET;
-        
-        System.out.println("\n" + cian + "     ╔══════════════════════════════════════════════════╗" + reset);
-        System.out.println(cian + "     ║ " + rojoB + "             PANEL DE ADMINISTRACIÓN            " + cian + " ║" + reset);
-        System.out.println(cian + "     ╚══════════════════════════════════════════════════╝" + reset);
-        
         while (elegir != 0) {
             
-        	System.out.println(cian + "       1." + reset + " Reponer Stock (Cargar cantidad)");
-            System.out.println(cian + "       2." + reset + " Introducir Nuevo Producto");
-            System.out.println(cian + "       3." + reset + " Eliminar Producto");
-            System.out.println(cian + "       4." + reset + " Ver Estado de la Caja");
-            System.out.println(cian + "       5." + reset + " Ver Recaudación Total");
-            System.out.println(cian + "       6." + reset + " Ver Stock Detallado");
-            System.out.println(cian + "       7." + reset + " Cambiar PIN de acceso");
-            System.out.println(rojoB + "       0. Salir al Menú Cliente" + reset);
-            System.out.println(cian + "────────────────────────────────────────────────────────" + reset);
-            System.out.print(cian + "       Seleccione una opción: " + reset);
+            System.out.println("\n" + CIAN + "     ╔══════════════════════════════════════════════════╗" + RESET);
+            System.out.println(CIAN + "     ║ " + ROJO_B + "             PANEL DE ADMINISTRACIÓN            " + CIAN + " ║" + RESET);
+            System.out.println(CIAN + "     ╚══════════════════════════════════════════════════╝" + RESET);
+        	
+        	System.out.println(CIAN + "       1." + RESET + " Reponer Stock (Cargar cantidad)");
+            System.out.println(CIAN + "       2." + RESET + " Introducir Nuevo Producto");
+            System.out.println(CIAN + "       3." + RESET + " Eliminar Producto");
+            System.out.println(CIAN + "       4." + RESET + " Ver Estado de la Caja");
+            System.out.println(CIAN + "       5." + RESET + " Ver Recaudación Total");
+            System.out.println(CIAN + "       6." + RESET + " Ver Stock Detallado");
+            System.out.println(CIAN + "       7." + RESET + " Cambiar PIN de acceso");
+            System.out.println(ROJO_B + "       0. Salir al Menú Cliente" + RESET);
+            System.out.println(CIAN + "───────────────────────────────────────────────────────────────" + RESET);
+            System.out.print(CIAN + "       Seleccione una opción: " + RESET);
             
             if (ScannerGlobal.sc.hasNextInt()) {
                 elegir = ScannerGlobal.sc.nextInt();
@@ -53,7 +49,7 @@ private MaquinaVending mv;
                 	ad.eleccionAdmin(elegir);
                 }                
             } else {
-            	System.out.println("\n" + ROJO + "  [!] Error: Por favor, introduce un número." + reset);
+            	System.out.println("\n" + ROJO + "  [!] Error: Por favor, introduce un número." + RESET);
                 ScannerGlobal.sc.next();
             }
         }
@@ -110,7 +106,7 @@ private MaquinaVending mv;
 		ScannerGlobal.sc.nextLine();
 		Ranuras pr = mv.getSistemaStock().getRanuras().get(code);
 		
-		if (pr != null) {
+		if (pr.getProducto() != null) {
 			System.out.println("\n" + BLANCO + "      PRODUCTO SELECCIONADO: " + AMARILLO + pr.getProducto().getNombre() + RESET);
 	        System.out.println("      STOCK ACTUAL: " + (pr.getCantidad() < 5 ? ROJO : VERDE) + pr.getCantidad() + " unidades" + RESET);
 			if (pr.getCantidad() > 5) {
@@ -137,7 +133,7 @@ private MaquinaVending mv;
 	            ScannerGlobal.sc.next();
 	        }
 	    } else {
-	        System.out.println(ROJO + "      La ranura " + code + " está vacía o no existe." + RESET);
+	        System.out.println(ROJO + "\n      La ranura " + code + " está vacía o no existe." + RESET);
 	    }
 	}
 	
@@ -179,9 +175,19 @@ private MaquinaVending mv;
 		    }
 		} while (!idValido);
 		
-		System.out.print(AMARILLO + "     Nombre del Producto: " + RESET);
-	    ScannerGlobal.sc.nextLine(); 
-	    String nombre = ScannerGlobal.sc.nextLine();
+		ScannerGlobal.sc.nextLine();
+		String nombreFinal = null;
+
+		while (nombreFinal == null) {
+		    System.out.print(AMARILLO + "     Nombre del Producto: " + RESET);
+		    String entradaAdmin = ScannerGlobal.sc.nextLine(); 
+		    
+		    nombreFinal = Productos.formatoNombre(entradaAdmin);
+
+		    if (nombreFinal == null) {
+		        System.out.println(ROJO + "      [!] El nombre debe contener solo letras y no puede estar vacío." + RESET);
+		    }
+		}
 		
 	    Productos pr = null;
 	    
@@ -196,7 +202,7 @@ private MaquinaVending mv;
 			    	System.out.println(ROJO + "      [!] Use S, M o L." + RESET);
 			    }
 			}
-			pr = new Snack(id, nombre, tamanio);
+			pr = new Snack(id, nombreFinal, tamanio);
 			break;
 		case 2:
 			
@@ -206,7 +212,7 @@ private MaquinaVending mv;
 			ScannerGlobal.sc.nextLine();
 			
 			boolean azucarada = pedirSiNo("     Es azucarada?");
-			pr = new Bebida(id, nombre, mililitros, azucarada);
+			pr = new Bebida(id, nombreFinal, mililitros, azucarada);
 			
 			break;
 		default:
@@ -218,7 +224,7 @@ private MaquinaVending mv;
 			int cantidad = ScannerGlobal.sc.hasNextInt() ? ScannerGlobal.sc.nextInt() : 0;
 			
 			String fraseResultado = mv.getSistemaStock().añadirProducto(code, pr, cantidad);
-			System.out.println("\n" + VERDE_B + ">>> " + fraseResultado + RESET);
+			System.out.println("\n" + VERDE_B + "   >>> " + fraseResultado + RESET);
 		}
 		
 	}
@@ -271,7 +277,7 @@ private MaquinaVending mv;
 	            resultado = false;
 	            entradaValida = true;
 	        } else {
-	        	System.out.println("\n" + ROJO + "      [!] Por favor, introduce 'S' para sí o 'N' para no." + RESET);
+	        	System.out.print("\n" + ROJO + "      [!] Por favor, introduce 'S' para sí o 'N' para no." + RESET);
 	        }
 	    } while (!entradaValida);
 	    

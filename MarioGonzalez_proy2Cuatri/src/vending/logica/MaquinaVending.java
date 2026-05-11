@@ -17,7 +17,7 @@ public class MaquinaVending {
 	
 	public MaquinaVending() {
 		this.sistemaStock = new Stock();
-		this.depositoMonedas = new Deposito (20);
+		this.depositoMonedas = new Deposito (10);
 		this.creditoCliente = BigDecimal.ZERO;
 		this.totalesAcumulados = BigDecimal.ZERO;
 		

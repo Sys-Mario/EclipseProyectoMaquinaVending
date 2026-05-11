@@ -107,6 +107,7 @@ public class Cliente {
 	        System.out.print(CIAN + "     ➤ Inserte moneda (Letra): " + RESET);
 	        
 	        eleccion = ScannerGlobal.sc.next().toUpperCase().trim();
+	        ScannerGlobal.sc.nextLine();
 	        
 	        mv.introducirMoneda(eleccion);
 	    } while (!eleccion.equals("S"));

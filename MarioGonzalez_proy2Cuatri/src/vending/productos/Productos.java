@@ -44,6 +44,37 @@ public abstract class Productos {
 
 	public abstract BigDecimal calcularPrecio(BigDecimal precio);
 
+	/**
+	 * Pone un formato al nombre, cuando intenta introducirlo a la maquina el administrador
+	 * Para que esten en mayus las primeras letras de las palabras.
+	 * @param entrada
+	 * @return
+	 */
+	public static String formatoNombre (String entrada) {
+		String resultado = null;
+		
+		if (entrada != null && !entrada.trim().isEmpty() && entrada.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+	        
+	        String textoLimpio = entrada.toLowerCase().trim();
+	        String[] palabras = textoLimpio.split(" ");
+	        String acumulador = "";
+	        
+	        for (int i = 0; i < palabras.length; i++) {
+	            String p = palabras[i];
+	            if (!p.isEmpty()) {
+	                String primeraMayus = p.substring(0, 1).toUpperCase();
+	                String restoMinus = p.substring(1);
+	                acumulador = acumulador + primeraMayus + restoMinus + " ";
+	            }
+	        }
+	        
+	        if (!acumulador.isEmpty()) {
+	            resultado = acumulador.trim();
+	        }
+	    }
+	    return resultado;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		Productos otroPro = (Productos) obj;

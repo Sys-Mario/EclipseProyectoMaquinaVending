@@ -58,6 +58,4 @@ public class Ranuras {
 	public String toString() {
 		return producto + " " + cantidad;
 	}
-	
-	
 }
