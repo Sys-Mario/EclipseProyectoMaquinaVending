@@ -42,14 +42,29 @@ public class Stock {
     	}
     }
     
-    // Validar que un código de ranura tiene el formato correcto
+    /**
+     * Valida que el formato del codigo sea correcto.
+     * @param codigo que se introduce
+     * @return boolean si es el mismo formato que el puesto.
+     */
     public boolean validarFormatoCodigo(String codigo) {
         return codigo != null && codigo.matches("^[A-D][1-4]$");
     }
+    
+    /**
+     * Valida que el formato del id sea correcto.
+     * @param id que se introduce
+     * @return boolean si es el mismo formato que el puesto.
+     */
     public boolean validarFormatoID(String id) {
         return id != null && id.matches("^P[0-9]{3}$");
     }
     
+    /**
+     * Comprueba si el id puesto a un producto, es el mismo que algun otro de la maquina.
+     * @param id del producto nuevo.
+     * @return boolean, si es igual es false.
+     */
     public boolean comprobarId (String id) {
     	boolean comprobar = false;
     	for (Ranuras r : ranuras.values()) {
@@ -60,7 +75,13 @@ public class Stock {
     	return comprobar;
     }
     
-    // Añadir un producto en una ranura libre (Validando ID único)
+    /**
+     * Añadir un producto en una ranura libre.
+     * @param codigo que se le quiere poner al producto.
+     * @param nuevoProducto que quieren introducir a la maquina.
+     * @param cantidad asignada al introducir el producto.
+     * @return un String, que dice que ha pasado, o si todo salio bien.
+     */
     public String añadirProducto(String codigo, Productos nuevoProducto, int cantidad) {
         String frase = "";
         Ranuras r = ranuras.get(codigo);
@@ -76,13 +97,18 @@ public class Stock {
         } else {
         	r.setProducto(nuevoProducto);
             r.setCantidad(cantidad);
-        	frase = "ÉXITO: Producto añadido correctamente a la ranura \" + codigo";
+        	frase = "ÉXITO: Producto añadido correctamente a la ranura " + codigo;
         }
     	
         return frase;
     }
 
-    // Eliminar un producto de una ranura
+    // 
+    /**
+     * Eliminar un producto de una ranura
+     * @param codigo
+     * @return
+     */
     public boolean eliminarProducto(String codigo) {
         boolean fueEliminado = false;
     	if (validarFormatoCodigo(codigo) && ranuras.containsKey(codigo)) {

@@ -28,22 +28,22 @@ private MaquinaVending mv;
         String cian = CIAN;
         String reset = RESET;
         
-        System.out.println("\n" + cian + "╔══════════════════════════════════════════════════╗" + reset);
-        System.out.println(cian + "║ " + rojoB + "             PANEL DE ADMINISTRACIÓN            " + cian + " ║" + reset);
-        System.out.println(cian + "╚══════════════════════════════════════════════════╝" + reset);
+        System.out.println("\n" + cian + "     ╔══════════════════════════════════════════════════╗" + reset);
+        System.out.println(cian + "     ║ " + rojoB + "             PANEL DE ADMINISTRACIÓN            " + cian + " ║" + reset);
+        System.out.println(cian + "     ╚══════════════════════════════════════════════════╝" + reset);
         
         while (elegir != 0) {
             
-        	System.out.println(cian + "  1." + reset + " Reponer Stock (Cargar cantidad)");
-            System.out.println(cian + "  2." + reset + " Introducir Nuevo Producto");
-            System.out.println(cian + "  3." + reset + " Eliminar Producto");
-            System.out.println(cian + "  4." + reset + " Ver Estado de la Caja");
-            System.out.println(cian + "  5." + reset + " Ver Recaudación Total");
-            System.out.println(cian + "  6." + reset + " Ver Stock Detallado");
-            System.out.println(cian + "  7." + reset + " Cambiar PIN de acceso");
-            System.out.println(rojoB + "  0. Salir al Menú Cliente" + reset);
-            System.out.println(cian + "────────────────────────────────────────────────────" + reset);
-            System.out.print(cian + "  Seleccione una opción: " + reset);
+        	System.out.println(cian + "       1." + reset + " Reponer Stock (Cargar cantidad)");
+            System.out.println(cian + "       2." + reset + " Introducir Nuevo Producto");
+            System.out.println(cian + "       3." + reset + " Eliminar Producto");
+            System.out.println(cian + "       4." + reset + " Ver Estado de la Caja");
+            System.out.println(cian + "       5." + reset + " Ver Recaudación Total");
+            System.out.println(cian + "       6." + reset + " Ver Stock Detallado");
+            System.out.println(cian + "       7." + reset + " Cambiar PIN de acceso");
+            System.out.println(rojoB + "       0. Salir al Menú Cliente" + reset);
+            System.out.println(cian + "────────────────────────────────────────────────────────" + reset);
+            System.out.print(cian + "       Seleccione una opción: " + reset);
             
             if (ScannerGlobal.sc.hasNextInt()) {
                 elegir = ScannerGlobal.sc.nextInt();
@@ -62,41 +62,48 @@ private MaquinaVending mv;
 	public void eleccionAdmin (int elegido) {
 		switch (elegido) {
 			case 1:
-				reponer ();
+				menuReponer ();
 				break;
 			case 2:
-				productoNuevo();
+				menuProductoNuevo();
 				break;
 			case 3:
-				eliminarProducto();
+				menuEliminarProducto();
 				break;
 			case 4:
 				mv.getDepositoMonedas().imprimirDepositoVisual();
 				break;
 			case 5:
-				mv.getSistemaStock().imprimirStockCompleto();
+				menuRecaudacionTotal();
 				break;
 			case 6:
-				
+				mv.getSistemaStock().imprimirStockCompleto();
 				break;
 			case 7:
-				
+				menuCambioPin();
 				break;
 			default:
-				System.out.println("Eleccion erronea");
+				System.out.println(ROJO + "     Eleccion erronea"+ RESET);
 		}
 		ScannerGlobal.pulseEnter();
 	}
 	
-	public void reponer () {
+	/**
+	 * Piden todos los datos para poder reponer un producto.
+	 */
+	public void menuReponer () {
 		int cantidad;
 		String code = "";
+		
+		System.out.println("\n" + AMARILLO + "     ╔══════════════════════════════════════════════════╗");
+	    System.out.println("     ║" + BLANCO + "            MÓDULO DE REPOSICIÓN STOCK            " + AMARILLO + "║");
+	    System.out.println("     ╚══════════════════════════════════════════════════╝" + RESET);
+	    
 		do {
-	        System.out.print("Dime el código del producto: ");
-	        code = ScannerGlobal.sc.next().trim().toUpperCase();
+			code = pedirCodigo(false);
 	        
 	        if (!mv.getSistemaStock().validarFormatoCodigo(code)) {
-	        	System.out.println("Codigo invalido, pruebe otro.");
+	        	System.out.println(ROJO + "      Formato inválido. Reintente." + RESET);
 	        }
 	    } while (!mv.getSistemaStock().validarFormatoCodigo(code));
 		
@@ -104,33 +111,51 @@ private MaquinaVending mv;
 		Ranuras pr = mv.getSistemaStock().getRanuras().get(code);
 		
 		if (pr != null) {
-			System.out.println("Quieres reponer el producto "+ pr.getProducto().getNombre());
+			System.out.println("\n" + BLANCO + "      PRODUCTO SELECCIONADO: " + AMARILLO + pr.getProducto().getNombre() + RESET);
+	        System.out.println("      STOCK ACTUAL: " + (pr.getCantidad() < 5 ? ROJO : VERDE) + pr.getCantidad() + " unidades" + RESET);
 			if (pr.getCantidad() > 5) {
-				System.out.println("Seguro que quieres reponerlo? Le queda bastante stock...");
+				System.out.println(AMARILLO + "      El stock es suficiente. ¿Desea continuar?" + RESET);
 			}
-			System.out.print("\nDime cuanto stock le quieres poner a mayores - MAX 10."
-					+ "\nTiene esta cantidad: "+ pr.getCantidad() + ". Cuanto: ");
-			cantidad = ScannerGlobal.sc.nextInt();
-			ScannerGlobal.sc.nextLine();
-			int cantidadVieja = pr.getCantidad();
-			pr.añadirCantidad(cantidad);
-			if (pr.getCantidad() > cantidadVieja) {
-				System.out.println("Stock modificado.");
-			}
-		}
+			System.out.print("\n      ¿Cuántas unidades desea añadir? (Máx. capacidad 10): ");
+			if (ScannerGlobal.sc.hasNextInt()) {
+	            cantidad = ScannerGlobal.sc.nextInt();
+	            ScannerGlobal.sc.nextLine();
+
+	            int totalPrevio = pr.getCantidad();
+	            
+	            if (totalPrevio + cantidad > 10) {
+	                System.out.println(ROJO + "      No cabe tanto stock. Capacidad máxima: 10." + RESET);
+	            } else if (cantidad < 0) {
+	                System.out.println(ROJO + "      No puede añadir cantidades negativas." + RESET);
+	            } else {
+	                pr.añadirCantidad(cantidad);
+	                System.out.println("\n" + VERDE + "      [OK] Inventario actualizado." + RESET);
+	                System.out.println(CIAN + "      Nuevo total en " + code + ": " + BLANCO + pr.getCantidad() + " unidades." + RESET);
+	            }
+	        } else {
+	            System.out.println(ROJO + "      Entrada no válida." + RESET);
+	            ScannerGlobal.sc.next();
+	        }
+	    } else {
+	        System.out.println(ROJO + "      La ranura " + code + " está vacía o no existe." + RESET);
+	    }
 	}
 	
-	public void productoNuevo () {
+	/**
+	 * Implementacion de un nuevo producto
+	 * Se le piden todos los datos necesarios.
+	 */
+	public void menuProductoNuevo () {
 		
-		System.out.println("\n" + CIAN + "┌──────────────────────────────────────────────────┐");
-	    System.out.println("│" + AMARILLO_B + "          REGISTRO DE NUEVO PRODUCTO              " + CIAN + "│");
-	    System.out.println("└──────────────────────────────────────────────────┘" + RESET);
+		System.out.println("\n" + CIAN + "     ┌──────────────────────────────────────────────────┐");
+	    System.out.println("     │" + AMARILLO_B + "          REGISTRO DE NUEVO PRODUCTO              " + CIAN + "│");
+	    System.out.println("     └──────────────────────────────────────────────────┘" + RESET);
 	    
-		String code = pedirCodigo ();
+		String code = pedirCodigo (true);
 		
 		int tipo = 0;
 	    while (tipo < 1 || tipo > 2) {
-	        System.out.print("\n" + CIAN + "Tipo:" + RESET + " [1] Snack  [2] Bebida: ");
+	        System.out.print("\n" + CIAN + "     Tipo:" + RESET + " [1] Snack  [2] Bebida: ");
 	        if (ScannerGlobal.sc.hasNextInt()) {
 	            tipo = ScannerGlobal.sc.nextInt();
 	        } else {
@@ -142,19 +167,19 @@ private MaquinaVending mv;
 		boolean idValido = false;
 		
 		do {
-			System.out.print(AMARILLO + "Dime el ID (Ej: P001): " + RESET);
+			System.out.print(AMARILLO + "     Dime el ID (Ej: P001): " + RESET);
 		    id = ScannerGlobal.sc.next().trim().toUpperCase();
 
 		    if (!mv.getSistemaStock().validarFormatoID(id)) {
-		        System.out.println(ROJO + " [!] El formato debe ser una 'P' seguida de 3 números (ej: P005)." + RESET);
+		        System.out.println(ROJO + "      [!] El formato debe ser una 'P' seguida de 3 números (ej: P005)." + RESET);
 		    } else if (mv.getSistemaStock().comprobarId(id)) { 
-		    	System.out.println(ROJO + " [!] El ID ya esta registrado." + RESET);
+		    	System.out.println(ROJO + "      [!] El ID ya esta registrado." + RESET);
 		    } else {
 		        idValido = true;
 		    }
 		} while (!idValido);
 		
-		System.out.print(AMARILLO + "Nombre del Producto: " + RESET);
+		System.out.print(AMARILLO + "     Nombre del Producto: " + RESET);
 	    ScannerGlobal.sc.nextLine(); 
 	    String nombre = ScannerGlobal.sc.nextLine();
 		
@@ -164,32 +189,32 @@ private MaquinaVending mv;
 		case 1:
 			TamanioSnacks tamanio = null;
 			while (tamanio == null) {
-				System.out.print(CIAN + "Introduce el tamaño (S, M, L): " + RESET);
+				System.out.print(CIAN + "     Introduce el tamaño (S, M, L): " + RESET);
 			    try {
 			        tamanio = TamanioSnacks.valueOf(ScannerGlobal.sc.next().trim().toUpperCase());
 			    } catch (IllegalArgumentException e) {
-			    	System.out.println(ROJO + " [!] Use S, M o L." + RESET);
+			    	System.out.println(ROJO + "      [!] Use S, M o L." + RESET);
 			    }
 			}
 			pr = new Snack(id, nombre, tamanio);
 			break;
 		case 2:
 			
-			System.out.print(CIAN + "Mililitros: " + RESET);
+			System.out.print(CIAN + "     Mililitros: " + RESET);
 	        int mililitros = ScannerGlobal.sc.hasNextInt() ? ScannerGlobal.sc.nextInt() : 330;
 			
 			ScannerGlobal.sc.nextLine();
 			
-			boolean azucarada = pedirSiNo("Es azucarada?");
+			boolean azucarada = pedirSiNo("     Es azucarada?");
 			pr = new Bebida(id, nombre, mililitros, azucarada);
 			
 			break;
 		default:
-			System.out.println("Eleccion erronea");
+			System.out.println(ROJO + "     Eleccion erronea"+ RESET);
 		}
 		
 		if (pr != null) {
-			System.out.print(AMARILLO + "Cantidad inicial: " + RESET);
+			System.out.print(AMARILLO + "     Cantidad inicial: " + RESET);
 			int cantidad = ScannerGlobal.sc.hasNextInt() ? ScannerGlobal.sc.nextInt() : 0;
 			
 			String fraseResultado = mv.getSistemaStock().añadirProducto(code, pr, cantidad);
@@ -198,31 +223,39 @@ private MaquinaVending mv;
 		
 	}
 	
-	public void eliminarProducto () {
+	/**
+	 * Eliminacion de un producto por codigo.
+	 */
+	public void menuEliminarProducto () {
 		
-		System.out.println("\n" + ROJO + "╔══════════════════════════════════════════════════╗");
-	    System.out.println("║              ELIMINAR PRODUCTO                   ║");
-	    System.out.println("╚══════════════════════════════════════════════════╝" + RESET);
+		System.out.println("\n" + ROJO + "     ╔══════════════════════════════════════════════════╗");
+	    System.out.println("     ║              ELIMINAR PRODUCTO                   ║");
+	    System.out.println("     ╚══════════════════════════════════════════════════╝" + RESET);
 		
-		String code = pedirCodigo ();
+		String code = pedirCodigo (false);
 		
-		System.out.println("\n" + AMARILLO + " ¿Está seguro de que desea eliminar el producto en " + code + "? " + RESET);
-	    if (pedirSiNo("")) {
+		System.out.print("\n" + AMARILLO + "      ¿Está seguro de que desea eliminar el producto en " + code + "? " + RESET);
+	    if (pedirSiNo(" ")) {
 	        
-	        System.out.print(ROJO + " Eliminando datos de la ranura " + code + "..." + RESET);
+	        System.out.print(ROJO + "      Eliminando datos de la ranura " + code + "..." + RESET);
 	        
 	        try { Thread.sleep(600); } catch (Exception e) {}
 
 	        if (mv.getSistemaStock().eliminarProducto(code)) {
-	            System.out.println("\n" + VERDE_B + " [✔] El producto fue eliminado correctamente." + RESET);
+	            System.out.println("\n" + VERDE_B + "      [✔] El producto fue eliminado correctamente." + RESET);
 	        } else {
-	            System.out.println("\n" + ROJO + " [!] La ranura ya estaba vacía o no se pudo acceder." + RESET);
+	            System.out.println("\n" + ROJO + "      [!] La ranura ya estaba vacía o no se pudo acceder." + RESET);
 	        }
 	    } else {
-	        System.out.println("\n" + CIAN + " [i] Operación cancelada por el administrador." + RESET);
+	        System.out.println("\n" + CIAN + "      [i] Operación cancelada por el administrador." + RESET);
 	    }
 	}
 	
+	/**
+	 * Metodo para pedir si o no.
+	 * @param mensaje para saber a que se refiere.
+	 * @return boolean de true (Si) o false (No).
+	 */
 	public boolean pedirSiNo(String mensaje) {
 	    boolean resultado = false;
 	    boolean entradaValida = false;
@@ -238,32 +271,38 @@ private MaquinaVending mv;
 	            resultado = false;
 	            entradaValida = true;
 	        } else {
-	        	System.out.println("\n" + ROJO + " [!] Por favor, introduce 'S' para sí o 'N' para no." + RESET);
+	        	System.out.println("\n" + ROJO + "      [!] Por favor, introduce 'S' para sí o 'N' para no." + RESET);
 	        }
 	    } while (!entradaValida);
 	    
 	    return resultado;
 	}
 	
-	public String pedirCodigo () {
+	/**
+	 * Para pedir codigos y poder validar las cosas.
+	 * @return el codigo.
+	 */
+	public String pedirCodigo (boolean debeEstarVacia) {
 		String code = "";
 		boolean codeValido = false;
 		do {
-			System.out.print(AMARILLO + "➤ Introduzca el código de ranura (ej. A1): " + RESET);
+			System.out.print(AMARILLO + "     ➤ Introduzca el código de ranura (ej. A1): " + RESET);
 			code = ScannerGlobal.sc.next().trim().toUpperCase();
 
 			if (!mv.getSistemaStock().validarFormatoCodigo(code)) {
-				System.out.println(ROJO + " [!] Formato de código inválido. Use Letra + Número." + RESET);
+				System.out.println(ROJO + "      [!] Formato de código inválido. Use Letra + Número." + RESET);
 	        } else {
 				Ranuras r = mv.getSistemaStock().getRanuras().get(code);
 				
 				if (r == null) {
-					System.out.println(ROJO + " [!] El código " + code + " no existe en el sistema." + RESET);
-				} else if (!r.estaVacia()) {
-					System.out.println(ROJO + " [!] La ranura " + code + " ya está ocupada por: " + CIAN + r.getProducto().getNombre() + RESET);
+					System.out.println(ROJO + "      [!] El código " + code + " no existe en el sistema." + RESET);
 				} else {
-				    codeValido = true;
-				}
+					if (debeEstarVacia && !r.estaVacia()) {
+						System.out.println(ROJO + "      [!] La ranura " + code + " ya está ocupada por: " + CIAN + r.getProducto().getNombre() + RESET);
+					} else {
+					    codeValido = true;
+					}
+				}	
 	        }
 			if (!codeValido) {
 				System.out.println(CIAN + "────────────────────────────────────────────────────" + RESET);
@@ -271,6 +310,51 @@ private MaquinaVending mv;
 			
 		} while (!codeValido);
 		return code;
+	}
+	
+	/**
+	 * Vista de toda la recaudacion en total de los productos.
+	 */
+	public void menuRecaudacionTotal () {
+		System.out.println("\n" + CIAN + "      ╔══════════════════════════════════════════════════╗");
+	    System.out.println("      ║" + BLANCO + "           REPORTE DE VENTAS DIARIAS              " + CIAN + "║");
+	    System.out.println("      ╚══════════════════════════════════════════════════╝" + RESET);
+	
+	    System.out.print(AMARILLO + "       >> Calculando totales de caja... " + RESET);
+	    try { Thread.sleep(1000); } catch (Exception e) {} // Pausa dramática para el cierre de caja
+	    System.out.println(VERDE + "[COMPLETADO]" + RESET);
+	    
+	    System.out.println("\n" + VERDE + "       ┌────────────────────────────────────────────────┐");
+	    System.out.printf(VERDE + "       │      " + BLANCO + " TOTAL RECAUDADO HOY: " + VERDE_B + " %13s€ " + VERDE + "    │%n", 
+	                      String.format("%.2f", mv.getTotalesAcumulados()));
+	    System.out.println(VERDE + "       └────────────────────────────────────────────────┘" + RESET);
+	    
+	    System.out.println(CIAN + "       Informe generado con éxito el " + java.time.LocalDate.now() + RESET);
+	}
+	
+	/**
+	 * El menu para el cambio de Pin del administrador.
+	 */
+	public void menuCambioPin() {
+	    System.out.println("\n" + AMARILLO + "      ╔══════════════════════════════════════════════════╗");
+		System.out.println("      ║" + BLANCO + "          CAMBIAR CONTRASEÑA DE ACCESO            " + AMARILLO + "║");
+		System.out.println("      ╚══════════════════════════════════════════════════╝" + RESET);
+		
+		System.out.print(CIAN + "       ➤ Ingrese nuevo PIN (4 números): " + RESET);
+		String p1 = ScannerGlobal.sc.next();
+		
+		System.out.print(CIAN + "       ➤ Confirme nuevo PIN: " + RESET);
+		String p2 = ScannerGlobal.sc.next();
+		
+		String resultado = mv.cambiarPin(p1, p2);
+		
+		if (resultado.startsWith("PIN")) {
+		    System.out.println("\n" + VERDE + "       [✔] " + resultado + RESET);
+		} else {
+		    System.out.println("\n" + ROJO + "       [!] " + resultado + RESET);
+	    }
+	    
+	    ScannerGlobal.sc.nextLine();
 	}
 	
 }

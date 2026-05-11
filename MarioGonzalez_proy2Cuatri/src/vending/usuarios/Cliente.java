@@ -16,6 +16,12 @@ public class Cliente {
 		return mv;
 	}
 
+	/**
+	 * Muestra la logica del cliente, que puede hacer durante el proceso.
+	 * @param cl (Cliente creado)
+	 * @param ad (Administrador creado)
+	 * @return boolean para terminar todo en el main.
+	 */
 	public boolean clienteLogic (Cliente cl, Administrador ad) {
 		int elegir = -1;
 		boolean seguirEnLaMaquina = true;
@@ -43,7 +49,7 @@ public class Cliente {
                     System.out.println("\n" + AMARILLO + "  Gracias por usar la máquina de " + RESET + "MARIO" + AMARILLO + ". ¡Hasta pronto!" + RESET);
                     break;
                 case 4:
-                    if (cl.modo()) {
+                    if (cl.modoAdmin()) {
                         ad.adminLogic(ad);
                     }
                     break;
@@ -61,6 +67,10 @@ public class Cliente {
 		return seguirEnLaMaquina;
 	}
 	
+	/**
+	 * En base a lo que elija el cliente, mandara a un sitio u otro.
+	 * @param elegido el valor introducido por cliente.
+	 */
 	public void eleccionUsuario (int elegido) {
 		switch (elegido) {
 			case 1:
@@ -77,6 +87,9 @@ public class Cliente {
 		}
 	}
 	
+	/**
+	 * Muestra y pide datos para introducir dinero a la maquina.
+	 */
 	public void introducir () {
 		System.out.println();
 	    String eleccion = "";
@@ -100,6 +113,9 @@ public class Cliente {
 	    System.out.println(VERDE + "     [✔] Inserción finalizada correctamente." + RESET);
 	}
 	
+	/**
+	 * Muestra y pide datos para comprar un producto.
+	 */
 	public void comprar () {
 		 String eleccion;
 		 boolean codigoValido = false;
@@ -128,7 +144,11 @@ public class Cliente {
 		mv.comprarProducto(eleccion);
 	}
 	
-	public boolean modo () {
+	/**
+	 * Metodo para preguntar la contraseña de Admin.
+	 * @return boolean que avisa si ha fallado (false) o consiguio entrar (true).
+	 */
+	public boolean modoAdmin () {
 		String intentoPin;
 		int intentosFallidos = 3;
 		boolean correcto = false;

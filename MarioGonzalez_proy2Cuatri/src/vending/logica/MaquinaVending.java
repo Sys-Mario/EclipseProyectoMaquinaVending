@@ -12,18 +12,23 @@ public class MaquinaVending {
 	private Stock sistemaStock;
 	private Deposito depositoMonedas;
 	private BigDecimal creditoCliente;
+	private BigDecimal totalesAcumulados;
 	private String pinAdmin = "1234";
 	
 	public MaquinaVending() {
 		this.sistemaStock = new Stock();
 		this.depositoMonedas = new Deposito (20);
 		this.creditoCliente = BigDecimal.ZERO;
+		this.totalesAcumulados = BigDecimal.ZERO;
+		
 	}
 	
 	public Stock getSistemaStock() { return sistemaStock; }
 	public Deposito getDepositoMonedas() { return depositoMonedas; }
 	public BigDecimal getCreditoCliente() { return creditoCliente; }
 	public void setCreditoCliente(BigDecimal creditoCliente) { this.creditoCliente = creditoCliente; }
+	public BigDecimal getTotalesAcumulados() { return totalesAcumulados; }
+	public void setTotalesAcumulados(BigDecimal totalesAcumulados) { this.totalesAcumulados = totalesAcumulados; }
 	public String getPinAdmin() { return pinAdmin; }
 	public void setPinAdmin(String pinAdmin) { this.pinAdmin = pinAdmin; }
 	
@@ -77,7 +82,6 @@ public class MaquinaVending {
             System.out.printf(CIAN + "    │  Crédito total: " + AMARILLO_B + "%7s€" + CIAN + "   │%n", this.creditoCliente);
             System.out.println(CIAN + "    └────────────────────────────┘" + RESET + "\n");
         }
-        //System.out.println(depositoMonedas.toString());
 	}
 
 	/**
@@ -94,6 +98,10 @@ public class MaquinaVending {
 	    return mapa;
 	}
 	
+	/**
+	 * Pasa varias condiciones para poder llegar a comprar un producto con su codigo.
+	 * @param eleccion string del codigo.
+	 */
 	public void comprarProducto(String eleccion) {
 	   
 	    Ranuras ranuraSeleccionada = sistemaStock.getRanuras().get(eleccion);
@@ -121,6 +129,7 @@ public class MaquinaVending {
 		                	System.out.println("\n" + VERDE_B + "      ★ COMPRA FINALIZADA CON ÉXITO ★" + RESET);
 		                    
 		                    creditoCliente = creditoCliente.subtract(precio);
+		                    totalesAcumulados = totalesAcumulados.add(precio);
 		                    ranuraSeleccionada.reducirStock();
 		                    
 		                    devolverCambio(); 
@@ -149,9 +158,11 @@ public class MaquinaVending {
 	    	System.out.println(ROJO + "      [!] ERROR: El código " + eleccion + " no existe." + RESET);
 	        ScannerGlobal.pulseEnter();
 	    }
-	    
 	}
 	
+	/**
+	 * Muestra por pantalla el credito de cambio.
+	 */
 	public void devolverCambio() {
 		System.out.println();
 		 
@@ -186,8 +197,33 @@ public class MaquinaVending {
 	    ScannerGlobal.pulseEnter();
 	}
 	
+	/**
+	 * Verifica si el pin insertado es igual al de la Maquina Vending.
+	 * @param pin string del supuesto pin insertado.
+	 * @return boolean si es igual o no.
+	 */
 	public boolean pinCorrecto (String pin) {
 		return pin.equals(getPinAdmin());
+	}
+	
+	/**
+	 * Para poder cambiar el pin de Administrador si quisiera.
+	 * @param pinNuevo el nuevo que quiere poner.
+	 * @param pinConfirmacion la copia para verificar.
+	 * @return un String si lo ha conseguido.
+	 */
+	public String cambiarPin(String pinNuevo, String pinConfirmacion) {
+	    String frase = "";
+
+	    if (!pinNuevo.equals(pinConfirmacion)) {
+	        frase = "Los PINs no coinciden.";
+	    } else if (!pinNuevo.matches("\\d{4}")) { 
+	        frase = "El PIN debe tener exactamente 4 números (0-9).";
+	    } else {
+	        this.pinAdmin = pinNuevo;
+	        frase = "PIN de administrador actualizado correctamente.";
+	    }
+	    return frase;
 	}
 	
 }

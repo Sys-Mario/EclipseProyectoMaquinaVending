@@ -12,32 +12,28 @@ public class Deposito {
 	public Deposito(int cantidadInicial) {
 		this.monedas = new EnumMap<>(Monedas.class);
 		if (cantidadInicial <= 0) {
-			rellenarMap();
+			rellenarMap(10);
 		} else {
 			rellenarMap(cantidadInicial);
 		}
 	}
 
-	// Rellenan el mapa de una cantidad asociada de monedas o por defecto de 10.
-	
-	public void rellenarMap ( ) {
-		for (Monedas m : Monedas.values()) {
-            monedas.put(m, 10);
-        }
-	}
-	
-	public void rellenarMap (int cantidad) {
-		for (Monedas m : Monedas.values()) {
-            monedas.put(m, cantidad);
-        }
-	}
-	
 	public Map<Monedas, Integer> getMonedas() {
 		return monedas;
 	}
 
 	public void setMonedas(Map<Monedas, Integer> monedas) {
 		this.monedas = monedas;
+	}
+	
+	/**
+	 * Rellena el mapa de una cantidad asociada de monedas o por defecto de 10.
+	 * @param cantidad asociada a todas las monedas.
+	 */
+	public void rellenarMap (int cantidad) {
+		for (Monedas m : Monedas.values()) {
+            monedas.put(m, cantidad);
+        }
 	}
 	
 	/**
@@ -76,17 +72,14 @@ public class Deposito {
 	            cantidadDisponible--;
 	            monedasAEntregar++;
 	        }
-
 	        if (monedasAEntregar > 0) {
 	            cambioAEntregar.put(m, monedasAEntregar);
 	            monedas.put(m, cantidadDisponible);
 	        }
 	    }
-
 	    if (restante.compareTo(BigDecimal.ZERO) > 0) {
 	        return null;
 	    }
-
 	    return cambioAEntregar;
 	}
 
@@ -119,6 +112,9 @@ public class Deposito {
 		monedas.put(moneda, monedasActuales + cantidad);
 	}
 	
+	/**
+	 * Muestra por pantalla todo el Deposito con su denominacion y cantidad en ese momento.
+	 */
 	public void imprimirDepositoVisual() {
 
 		System.out.println("\n" + AZUL + " ┌────────────────────────────────────────────────────────────┐");
