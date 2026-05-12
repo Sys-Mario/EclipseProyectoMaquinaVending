@@ -10,6 +10,7 @@ import vending.productos.TamanioSnacks;
 import static vending.logica.InterfazConsola.*;
 
 public class Stock {
+	
     private Map<String, Ranuras> ranuras;
 
     public Stock() {
@@ -34,11 +35,11 @@ public class Stock {
             	ranuras.put(i + String.valueOf(j), new Ranuras(null, 0));
             }
         
-		ranuras.put("A1", new Ranuras(new Bebida("P01", "Coca", 330, true), 5));
-		ranuras.put("A2", new Ranuras(new Bebida("P02", "Agua", 500, false), 10));
+		ranuras.put("A1", new Ranuras(new Bebida("P001", "Coca", 330, true), 5));
+		ranuras.put("A2", new Ranuras(new Bebida("P002", "Agua", 500, false), 10));
 	    
-		ranuras.put("B1", new Ranuras(new Snack("P03", "Chips", TamanioSnacks.M), 8));
-		ranuras.put("B2", new Ranuras(new Snack("P04", "Choco", TamanioSnacks.L), 3));
+		ranuras.put("B1", new Ranuras(new Snack("P003", "Chips", TamanioSnacks.M), 8));
+		ranuras.put("B2", new Ranuras(new Snack("P004", "Choco", TamanioSnacks.L), 3));
     	}
     }
     

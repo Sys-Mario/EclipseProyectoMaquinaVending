@@ -8,6 +8,7 @@ import static vending.logica.InterfazConsola.*;
 public class Deposito {
 
 	private Map<Monedas, Integer> monedas;
+	private BigDecimal totalesAcumulados;
 	
 	public Deposito(int cantidadInicial) {
 		this.monedas = new EnumMap<>(Monedas.class);
@@ -16,15 +17,13 @@ public class Deposito {
 		} else {
 			rellenarMap(cantidadInicial);
 		}
+		this.totalesAcumulados = BigDecimal.ZERO;
 	}
 
-	public Map<Monedas, Integer> getMonedas() {
-		return monedas;
-	}
-
-	public void setMonedas(Map<Monedas, Integer> monedas) {
-		this.monedas = monedas;
-	}
+	public Map<Monedas, Integer> getMonedas() { return monedas; }
+	public void setMonedas(Map<Monedas, Integer> monedas) { this.monedas = monedas; }
+	public BigDecimal getTotalesAcumulados() { return totalesAcumulados; }
+	public void setTotalesAcumulados(BigDecimal totalesAcumulados) { this.totalesAcumulados = totalesAcumulados; }
 	
 	/**
 	 * Rellena el mapa de una cantidad asociada de monedas o por defecto de 10.
@@ -49,6 +48,10 @@ public class Deposito {
 	        case CINCO_CENT     -> new BigDecimal("0.05");
 	        default             -> BigDecimal.ZERO;
 	    };
+	}
+	
+	public void ganadoComprasTotales (BigDecimal precio) {
+		this.totalesAcumulados = this.totalesAcumulados.add(precio);
 	}
 	
 	/**

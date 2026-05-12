@@ -45,12 +45,11 @@ public class Cliente {
 	            
 	            switch (elegir) {
                 case 0:
-                    seguirEnLaMaquina = false;
                     System.out.println("\n" + AMARILLO + "  Gracias por usar la máquina de " + RESET + "MARIO" + AMARILLO + ". ¡Hasta pronto!" + RESET);
                     break;
                 case 4:
                     if (cl.modoAdmin()) {
-                        ad.adminLogic(ad);
+                    	seguirEnLaMaquina = ad.adminLogic(ad);
                     }
                     break;
                 case 1, 2, 3:

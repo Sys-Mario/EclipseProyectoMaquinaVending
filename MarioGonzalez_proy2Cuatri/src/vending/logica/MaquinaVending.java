@@ -12,23 +12,18 @@ public class MaquinaVending {
 	private Stock sistemaStock;
 	private Deposito depositoMonedas;
 	private BigDecimal creditoCliente;
-	private BigDecimal totalesAcumulados;
 	private String pinAdmin = "1234";
 	
 	public MaquinaVending() {
 		this.sistemaStock = new Stock();
 		this.depositoMonedas = new Deposito (10);
-		this.creditoCliente = BigDecimal.ZERO;
-		this.totalesAcumulados = BigDecimal.ZERO;
-		
+		this.creditoCliente = BigDecimal.ZERO;		
 	}
 	
 	public Stock getSistemaStock() { return sistemaStock; }
 	public Deposito getDepositoMonedas() { return depositoMonedas; }
 	public BigDecimal getCreditoCliente() { return creditoCliente; }
 	public void setCreditoCliente(BigDecimal creditoCliente) { this.creditoCliente = creditoCliente; }
-	public BigDecimal getTotalesAcumulados() { return totalesAcumulados; }
-	public void setTotalesAcumulados(BigDecimal totalesAcumulados) { this.totalesAcumulados = totalesAcumulados; }
 	public String getPinAdmin() { return pinAdmin; }
 	public void setPinAdmin(String pinAdmin) { this.pinAdmin = pinAdmin; }
 	
@@ -129,7 +124,7 @@ public class MaquinaVending {
 		                	System.out.println("\n" + VERDE_B + "      ★ COMPRA FINALIZADA CON ÉXITO ★" + RESET);
 		                    
 		                    creditoCliente = creditoCliente.subtract(precio);
-		                    totalesAcumulados = totalesAcumulados.add(precio);
+		                    depositoMonedas.ganadoComprasTotales(precio);
 		                    ranuraSeleccionada.reducirStock();
 		                    
 		                    devolverCambio(); 
@@ -143,7 +138,7 @@ public class MaquinaVending {
 
 		            } else {
 		                System.out.println(ROJO + "      [!] CRÉDITO INSUFICIENTE" + RESET);
-		                System.out.println(" Faltan: " + AMARILLO + precio.subtract(creditoCliente) + "€" + RESET);
+		                System.out.println("       Faltan: " + AMARILLO + precio.subtract(creditoCliente) + "€" + RESET);
 		                ScannerGlobal.pulseEnter();
 		            }
 		        } else {

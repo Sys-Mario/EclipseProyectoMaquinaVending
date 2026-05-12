@@ -21,10 +21,12 @@ private MaquinaVending mv;
 		return mv;
 	}
 	
-	public void adminLogic(Administrador ad) {
+	public boolean adminLogic(Administrador ad) {
         int elegir = -1;
+        boolean salirMaquina = true;
+        String pinAntigua = mv.getPinAdmin();
         
-        while (elegir != 0) {
+        while (elegir != 0 && elegir != 666 && mv.getPinAdmin().equals(pinAntigua)) {
             
             System.out.println("\n" + CIAN + "     ╔══════════════════════════════════════════════════╗" + RESET);
             System.out.println(CIAN + "     ║ " + ROJO_B + "             PANEL DE ADMINISTRACIÓN            " + CIAN + " ║" + RESET);
@@ -38,6 +40,7 @@ private MaquinaVending mv;
             System.out.println(CIAN + "       6." + RESET + " Ver Stock Detallado");
             System.out.println(CIAN + "       7." + RESET + " Cambiar PIN de acceso");
             System.out.println(ROJO_B + "       0. Salir al Menú Cliente" + RESET);
+            System.out.println(ROJO_B + "       666. [TOCAR EN URGENCIA] Apagar Maquina" + RESET);
             System.out.println(CIAN + "───────────────────────────────────────────────────────────────" + RESET);
             System.out.print(CIAN + "       Seleccione una opción: " + RESET);
             
@@ -45,14 +48,18 @@ private MaquinaVending mv;
                 elegir = ScannerGlobal.sc.nextInt();
                 ScannerGlobal.sc.nextLine(); 
                 
-                if (elegir != 0) {
+                if (elegir == 666) {
+                	System.out.println("\n" + AMARILLO + "  Gracias por usar la máquina de " + RESET + "MARIO" + AMARILLO + ". ¡Adios!" + RESET + " ☺♥");
+                	salirMaquina = false;
+                } else if (elegir != 0) {
                 	ad.eleccionAdmin(elegir);
-                }                
+                }
             } else {
             	System.out.println("\n" + ROJO + "  [!] Error: Por favor, introduce un número." + RESET);
                 ScannerGlobal.sc.next();
             }
         }
+        return salirMaquina;
     }
 	
 	public void eleccionAdmin (int elegido) {
@@ -79,7 +86,7 @@ private MaquinaVending mv;
 				menuCambioPin();
 				break;
 			default:
-				System.out.println(ROJO + "     Eleccion erronea"+ RESET);
+				System.out.println("\n" + ROJO + "  [!] Opción no disponible. Inténtelo de nuevo." + RESET);
 		}
 		ScannerGlobal.pulseEnter();
 	}
@@ -243,18 +250,21 @@ private MaquinaVending mv;
 		System.out.print("\n" + AMARILLO + "      ¿Está seguro de que desea eliminar el producto en " + code + "? " + RESET);
 	    if (pedirSiNo(" ")) {
 	        
-	        System.out.print(ROJO + "      Eliminando datos de la ranura " + code + "..." + RESET);
-	        
-	        try { Thread.sleep(600); } catch (Exception e) {}
-
-	        if (mv.getSistemaStock().eliminarProducto(code)) {
-	            System.out.println("\n" + VERDE_B + "      [✔] El producto fue eliminado correctamente." + RESET);
-	        } else {
+	    	if (!mv.getSistemaStock().getRanuras().get(code).estaVacia()) {
+	    		if (mv.getSistemaStock().eliminarProducto(code)) {
+	    			System.out.print(ROJO + "\n      Eliminando datos de la ranura " + code + "..." + RESET);
+	    	        
+	    	        try { Thread.sleep(600); } catch (Exception e) {}
+	    			
+	    			System.out.println("\n" + VERDE_B + "      [✔] El producto fue eliminado correctamente." + RESET);
+		        } 
+	    	} else {
 	            System.out.println("\n" + ROJO + "      [!] La ranura ya estaba vacía o no se pudo acceder." + RESET);
 	        }
 	    } else {
 	        System.out.println("\n" + CIAN + "      [i] Operación cancelada por el administrador." + RESET);
 	    }
+	    ScannerGlobal.sc.nextLine();
 	}
 	
 	/**
@@ -296,7 +306,7 @@ private MaquinaVending mv;
 			code = ScannerGlobal.sc.next().trim().toUpperCase();
 
 			if (!mv.getSistemaStock().validarFormatoCodigo(code)) {
-				System.out.println(ROJO + "      [!] Formato de código inválido. Use Letra + Número." + RESET);
+				System.out.println(ROJO + "      [!] Formato de código inválido. Use Letra + Número [A-D+1-4]." + RESET);
 	        } else {
 				Ranuras r = mv.getSistemaStock().getRanuras().get(code);
 				
@@ -332,7 +342,7 @@ private MaquinaVending mv;
 	    
 	    System.out.println("\n" + VERDE + "       ┌────────────────────────────────────────────────┐");
 	    System.out.printf(VERDE + "       │      " + BLANCO + " TOTAL RECAUDADO HOY: " + VERDE_B + " %13s€ " + VERDE + "    │%n", 
-	                      String.format("%.2f", mv.getTotalesAcumulados()));
+	                      String.format("%.2f", mv.getDepositoMonedas().getTotalesAcumulados()));
 	    System.out.println(VERDE + "       └────────────────────────────────────────────────┘" + RESET);
 	    
 	    System.out.println(CIAN + "       Informe generado con éxito el " + java.time.LocalDate.now() + RESET);
@@ -346,13 +356,16 @@ private MaquinaVending mv;
 		System.out.println("      ║" + BLANCO + "          CAMBIAR CONTRASEÑA DE ACCESO            " + AMARILLO + "║");
 		System.out.println("      ╚══════════════════════════════════════════════════╝" + RESET);
 		
+		System.out.print(CIAN + "       ➤ Ingrese PIN antiguo: " + RESET);
+		String passAntigua = ScannerGlobal.sc.next();
+		
 		System.out.print(CIAN + "       ➤ Ingrese nuevo PIN (4 números): " + RESET);
-		String p1 = ScannerGlobal.sc.next();
+		String pass1 = ScannerGlobal.sc.next();
 		
 		System.out.print(CIAN + "       ➤ Confirme nuevo PIN: " + RESET);
-		String p2 = ScannerGlobal.sc.next();
+		String pass2 = ScannerGlobal.sc.next();
 		
-		String resultado = mv.cambiarPin(p1, p2);
+		String resultado = mv.cambiarPin(pass1, pass2);
 		
 		if (resultado.startsWith("PIN")) {
 		    System.out.println("\n" + VERDE + "       [✔] " + resultado + RESET);
